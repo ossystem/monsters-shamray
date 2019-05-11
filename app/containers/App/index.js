@@ -1,11 +1,3 @@
-/**
- *
- * App
- *
- * This component is the skeleton around the actual pages, and should only
- * contain code that should be seen on all pages. (e.g. navigation bar)
- */
-
 import React from 'react';
 import { Helmet } from 'react-helmet';
 import styled from 'styled-components';
@@ -32,10 +24,10 @@ export default function App() {
   return (
     <AppWrapper>
       <Helmet
-        titleTemplate="%s - React.js Boilerplate"
-        defaultTitle="React.js Boilerplate"
+        titleTemplate="%s - Find your monster"
+        defaultTitle="Find your monster"
       >
-        <meta name="description" content="A React.js Boilerplate application" />
+        <meta name="description" content="Find your monster - A React.js application" />
       </Helmet>
       <Header />
       <Switch>
