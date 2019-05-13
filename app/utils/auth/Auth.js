@@ -1,5 +1,5 @@
-import history from '../history';
 import auth0 from 'auth0-js';
+import history from '../history';
 import { AUTH_CONFIG } from './auth0-variables';
 
 export default class Auth {
@@ -11,6 +11,7 @@ export default class Auth {
     domain: AUTH_CONFIG.domain,
     clientID: AUTH_CONFIG.clientId,
     redirectUri: AUTH_CONFIG.callbackUrl,
+    realm: AUTH_CONFIG.realm,
     responseType: 'token id_token',
     scope: 'openid',
   });
@@ -25,14 +26,28 @@ export default class Auth {
     this.renewSession = this.renewSession.bind(this);
   }
 
-  login() {
-    this.auth0.authorize();
+  async login(email, password, redirectAfterLogin) {
+    return new Promise((resolve, reject) => {
+      if (redirectAfterLogin) {
+        localStorage.setItem('redirectAfterLogin', redirectAfterLogin);
+      }
+      this.auth0.login({ email, password }, err => {
+        if (err) {
+          console.log(err);
+          alert(`Could not login (${err.error}: ${err.error_description}).`);
+          reject(err);
+        } else {
+          resolve();
+        }
+      });
+    });
   }
 
   handleAuthentication() {
     this.auth0.parseHash((err, authResult) => {
       if (authResult && authResult.accessToken && authResult.idToken) {
         this.setSession(authResult);
+        this.navigateAfterLogin();
       } else if (err) {
         history.replace('/');
         console.log(err);
@@ -50,7 +65,6 @@ export default class Auth {
   }
 
   setSession(authResult) {
-    // Set isLoggedIn flag in localStorage
     localStorage.setItem('isLoggedIn', 'true');
 
     // Set the time that the access token will expire at
@@ -58,21 +72,30 @@ export default class Auth {
     this.accessToken = authResult.accessToken;
     this.idToken = authResult.idToken;
     this.expiresAt = expiresAt;
-
-    // navigate to the home route
-    history.replace('/');
   }
 
   renewSession() {
     this.auth0.checkSession({}, (err, authResult) => {
-       if (authResult && authResult.accessToken && authResult.idToken) {
-         this.setSession(authResult);
-       } else if (err) {
-         this.logout();
-         console.log(err);
-         alert(`Could not get a new token (${err.error}: ${err.error_description}).`);
-       }
+      if (authResult && authResult.accessToken && authResult.idToken) {
+        this.setSession(authResult);
+        this.navigateAfterLogin();
+      } else if (err) {
+        this.logout();
+        console.log(err);
+        alert(`Could not get a new token (${err.error}: ${err.error_description}).`);
+      }
     });
+  }
+
+  navigateAfterLogin() {
+    let redirectAfterLogin = localStorage.getItem('redirectAfterLogin');
+    if (redirectAfterLogin) {
+      Promise.resolve().then(() => {
+        localStorage.removeItem('redirectAfterLogin');
+      });
+    }
+    redirectAfterLogin = redirectAfterLogin || '/';
+    history.replace(redirectAfterLogin);
   }
 
   logout() {

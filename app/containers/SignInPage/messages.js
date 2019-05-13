@@ -5,6 +5,10 @@ export const scope = 'app.containers.SignUpPage';
 export default defineMessages({
   header: {
     id: `${scope}.header`,
-    defaultMessage: 'This is the SignUp container!',
+    defaultMessage: 'Start by Signup',
+  },
+  submitButton: {
+    id: `${scope}.submitButton`,
+    defaultMessage: 'Next',
   },
 });

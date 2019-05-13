@@ -12,7 +12,7 @@ import PropTypes from 'prop-types';
 import { Switch, Route, Redirect } from 'react-router-dom';
 
 import HomePage from 'containers/HomePage';
-import SignUpPage from 'containers/SignUpPage';
+import SignInPage from 'containers/SignInPage';
 import Callback from 'containers/Callback';
 import Questioner from 'containers/Questioner/Loadable';
 import ResultPage from 'containers/ResultPage/Loadable';
@@ -22,7 +22,6 @@ import { Helmet } from 'react-helmet';
 import GlobalStyle from '../../global-styles';
 
 const handleAuthentication = ({ location, auth }) => {
-  if (!auth) throw new Error('!auth');
   if (/access_token|id_token|error/.test(location.hash)) {
     auth.handleAuthentication();
   }
@@ -76,12 +75,12 @@ class App extends React.Component {
             render={props => <HomePage auth={auth} {...props} />}
           />
           <Route
-            path="/signUp"
+            path="/login"
             render={props =>
               auth.isAuthenticated() ? (
                 <Redirect to="/" />
               ) : (
-                <SignUpPage auth={auth} {...props} />
+                <SignInPage auth={auth} {...props} />
               )
             }
           />
@@ -93,7 +92,7 @@ class App extends React.Component {
           <Route
             path="/callback"
             render={props => {
-              handleAuthentication(props);
+              handleAuthentication({ location: props.location, auth });
               return <Callback {...props} />;
             }}
           />

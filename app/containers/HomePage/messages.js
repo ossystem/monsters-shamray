@@ -12,4 +12,8 @@ export default defineMessages({
     id: `${scope}.header`,
     defaultMessage: 'This is the HomePage container!',
   },
+  startButton: {
+    id: `${scope}.startButton`,
+    defaultMessage: 'Start',
+  },
 });
