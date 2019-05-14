@@ -12,14 +12,14 @@ module.exports = function(app, middlewares) {
 
   app.post(`${API_URL}/saveAnswers`, checkJwt, async (req, res, next) => {
     try {
-      await mailer.init();
+      /*await mailer.init();
       const addresse = 'okeanrst@gmail.com';
       const subject = 'Found your monster: Your result';
       const mailTemplate = 'result';
       const data = {};
-      await mailer.sendMailTemplate(addresse, subject, mailTemplate, data);
+      await mailer.sendMailTemplate(addresse, subject, mailTemplate, data);*/
 
-      res.json({message: 'Hello from a private endpoint! You need to be authenticated and have a scope of read:messages to see this.'});
+      res.json({data: 'dev in progress'});
     } catch (e) {
       next(e);
     }
