@@ -72,6 +72,12 @@ app.use(
   }),
 );
 
+if (!process.env.AUTH0_DOMAIN || !process.env.AUTH0_AUDIENCE) {
+  throw new Error(
+    'Make sure you have AUTH0_DOMAIN, and AUTH0_AUDIENCE in your .env file',
+  );
+}
+
 const checkJwt = jwt({
   // Dynamically provide a signing key based on the kid in the header and the singing keys provided by the JWKS endpoint.
   secret: jwksRsa.expressJwtSecret({
@@ -82,7 +88,7 @@ const checkJwt = jwt({
   }),
 
   // Validate the audience and the issuer.
-  audience: process.env.AUTH0_AUDIENCE,
+  audience: `https://${process.env.AUTH0_AUDIENCE}`,
   issuer: `https://${process.env.AUTH0_DOMAIN}/`,
   algorithms: ['RS256'],
 });

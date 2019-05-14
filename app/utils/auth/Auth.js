@@ -4,7 +4,9 @@ import { AUTH_CONFIG } from './auth0-variables';
 
 export default class Auth {
   accessToken;
+
   idToken;
+
   expiresAt;
 
   auth0 = new auth0.WebAuth({
@@ -14,6 +16,8 @@ export default class Auth {
     realm: AUTH_CONFIG.realm,
     responseType: 'token id_token',
     scope: 'openid',
+    audience: AUTH_CONFIG.audience,
+    issuer: AUTH_CONFIG.issuer,
   });
 
   constructor() {
@@ -68,7 +72,7 @@ export default class Auth {
     localStorage.setItem('isLoggedIn', 'true');
 
     // Set the time that the access token will expire at
-    const expiresAt = (authResult.expiresIn * 1000) + new Date().getTime();
+    const expiresAt = authResult.expiresIn * 1000 + new Date().getTime();
     this.accessToken = authResult.accessToken;
     this.idToken = authResult.idToken;
     this.expiresAt = expiresAt;
@@ -82,7 +86,9 @@ export default class Auth {
       } else if (err) {
         this.logout();
         console.log(err);
-        alert(`Could not get a new token (${err.error}: ${err.error_description}).`);
+        alert(
+          `Could not get a new token (${err.error}: ${err.error_description}).`,
+        );
       }
     });
   }
@@ -118,7 +124,7 @@ export default class Auth {
   isAuthenticated() {
     // Check whether the current time is past the
     // access token's expiry time
-    const expiresAt = this.expiresAt;
+    const { expiresAt } = this;
     return new Date().getTime() < expiresAt;
   }
 }
