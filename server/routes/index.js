@@ -1,9 +1,16 @@
 const { API_URL } = require('../../constants');
 const mailer = require('../services/mailer');
+const questionerConfig = require('../data/questionerConfig');
 
 module.exports = function(app, middlewares) {
   const { checkJwt } = middlewares;
-  app.get(`${API_URL}/save`, checkJwt, async (req, res, next) => {
+
+  app.get(`${API_URL}/questionerConfig`, checkJwt, async (req, res) => {
+    const data = questionerConfig;
+    res.json({ data });
+  });
+
+  app.post(`${API_URL}/saveAnswers`, checkJwt, async (req, res, next) => {
     try {
       await mailer.init();
       const addresse = 'okeanrst@gmail.com';

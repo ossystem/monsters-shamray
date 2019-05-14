@@ -1,6 +1,6 @@
 import { defineMessages } from 'react-intl';
 
-export const scope = 'app.containers.SignUpPage';
+export const scope = 'app.containers.SignInPage';
 
 export default defineMessages({
   header: {

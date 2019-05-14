@@ -54,7 +54,7 @@ class App extends React.Component {
 
     const withCheckAuthenticated = Component => props => (
       !auth.isAuthenticated() ? (
-        <Redirect to="signUp" />
+        <Redirect to="login" />
       ) : (
         <Component auth={auth} {...props} />
       )

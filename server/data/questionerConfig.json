@@ -1,0 +1,56 @@
+{
+  "steps": [
+    {
+      "question": "Are you afraid of the dark?",
+      "type": "select",
+      "multiple": false,
+      "appearance": "checkbox",
+      "options": [
+        { "name": "I'm not scared at all", "value": "not" },
+        { "name": "Sometimes", "value": "sometimes" },
+        { "name": "Never", "value": "never" },
+        { "name": "What a stupid question!", "value": "stupidQuestion" }
+      ]
+    },
+    {
+      "question": "What do you prefer?",
+      "type": "select",
+      "appearance": "checkbox",
+      "options": [
+        { "name": "Fur", "value": "fur" },
+        { "name": "Snake skin", "value": "snakeSkin" },
+        { "name": "Slick skin", "value": "slickSkin" },
+        { "name": "Velvet", "value": "velvet" }
+      ]
+    },
+    {
+      "question": "What do you prefer?",
+      "type": "select",
+      "appearance": "checkbox",
+      "options": [
+        { "name": "Fur", "value": "fur" },
+        { "name": "Snake skin", "value": "snakeSkin" },
+        { "name": "Slick skin", "value": "slickSkin" },
+        { "name": "All:)", "value": "all" }
+      ]
+    },
+    {
+      "question": "Are you a day monster or a night monster?",
+      "type": "select",
+      "appearance": "switcher",
+      "options": [
+        { "name": "Day monster", "value": "dayMonster" },
+        { "name": "Night monster", "value": "nightMonster" }
+      ]
+    },
+    {
+      "question": "You'd rather be a bad or a good monster?",
+      "type": "select",
+      "appearance": "slider",
+      "options": [
+        { "name": "Good monster", "value": "goodMonster" },
+        { "name": "Bad monster", "value": "badMonster" }
+      ]
+    }
+  ]
+}

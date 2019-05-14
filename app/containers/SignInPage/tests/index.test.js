@@ -2,15 +2,15 @@ import React from 'react';
 import { render } from 'react-testing-library';
 import { IntlProvider } from 'react-intl';
 
-import SignUpPage from '../index';
+import SignInPage from '../index';
 
-describe('<SignUpPage />', () => {
+describe('<SignInPage />', () => {
   it('should render and match the snapshot', () => {
     const {
       container: { firstChild },
     } = render(
       <IntlProvider locale="en">
-        <SignUpPage />
+        <SignInPage />
       </IntlProvider>,
     );
     expect(firstChild).toMatchSnapshot();
