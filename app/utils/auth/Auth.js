@@ -28,6 +28,14 @@ export default class Auth {
     this.getAccessToken = this.getAccessToken.bind(this);
     this.getIdToken = this.getIdToken.bind(this);
     this.renewSession = this.renewSession.bind(this);
+    this.clone = this.clone.bind(this);
+  }
+
+  clone() {
+    const { accessToken, idToken, expiresAt } = this;
+    const auth = new Auth();
+    Object.assign(auth, { accessToken, idToken, expiresAt });
+    return auth;
   }
 
   async login(email, password, redirectAfterLogin) {
