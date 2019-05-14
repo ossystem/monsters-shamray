@@ -12,12 +12,20 @@ module.exports = function(app, middlewares) {
 
   app.post(`${API_URL}/saveAnswers`, checkJwt, async (req, res, next) => {
     try {
-      /*await mailer.init();
-      const addresse = 'okeanrst@gmail.com';
-      const subject = 'Found your monster: Your result';
-      const mailTemplate = 'result';
-      const data = {};
-      await mailer.sendMailTemplate(addresse, subject, mailTemplate, data);*/
+      const sendOnEmail = async () => {
+        try {
+          await mailer.init();
+          const addresse = 'okeanrst@gmail.com';
+          const subject = 'Found your monster: Your result';
+          const mailTemplate = 'result';
+          const data = {};
+          await mailer.sendMailTemplate(addresse, subject, mailTemplate, data);
+          console.log('sendOnEmail succsess');
+        } catch (error) {
+          console.log(`sendOnEmail error: ${error}`);
+        }
+      }
+      sendOnEmail();
 
       res.json({data: 'dev in progress'});
     } catch (e) {
