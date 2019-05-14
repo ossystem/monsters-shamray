@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Helmet } from 'react-helmet';
-import Question from './Question';
+import Index from '../../components/question';
 import Button from 'components/bootstrapButton';
 import ArrowForward from '@material-ui/icons/ArrowForward';
 import { connect } from 'react-redux';
@@ -47,7 +47,7 @@ class Questioner extends React.Component {
       if (type === 'select' && appearance === 'switcher') {
         answers[step] = stepConfig.options[0].value;
       } else if (type === 'select' && appearance === 'slider') {
-        //TODO
+        answers[step] = 0;
       }
     });
     return answers;
@@ -62,7 +62,7 @@ class Questioner extends React.Component {
       history,
     } = this.props;
     const { step, answers } = this.state;
-    if (step === steps.length) {
+    if (step >= steps.length - 1) {
       try {
         await saveAnswers(answers);
         history.push('result');
@@ -85,7 +85,7 @@ class Questioner extends React.Component {
       if (!keys.length) return false;
       return !!keys.find(key => !!value[key]);
     } else {
-      return !!value;
+      return !!value && value !== 0;
     }
   }
 
@@ -117,7 +117,7 @@ class Questioner extends React.Component {
         </Helmet>
         {!questionerConfigFetching && questionerConfig && (
           <React.Fragment>
-            <Question
+            <Index
               config={questionerConfig.steps[step]}
               value={answers[step]}
               id={step}
