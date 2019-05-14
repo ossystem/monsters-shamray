@@ -1,7 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Helmet } from 'react-helmet';
-import { FormattedMessage } from 'react-intl';
+import Question from './Question';
+import Button from 'components/bootstrapButton';
+import ArrowForward from '@material-ui/icons/ArrowForward';
 import { connect } from 'react-redux';
 import { compose, bindActionCreators } from 'redux';
 import injectReducer from 'utils/injectReducer';
@@ -11,21 +13,101 @@ import messages from './messages';
 import * as actionsTypes from './constants';
 
 class Questioner extends React.Component {
-  // constructor(props) {
-  //   super(props);
-  //
-  //   // this.state = {
-  //   //   questions: null,
-  //   // };
-  // }
+  constructor(props) {
+    super(props);
+
+    const {
+      questionerConfig: { data: questionerConfig },
+    } = this.props;
+    const answers = questionerConfig
+      ? this.formDefaultAnswers(questionerConfig)
+      : [];
+
+    this.state = { step: 0, answers };
+  }
 
   componentDidMount() {
-    this.props.getQuestionerConfig();
+    this.props.getQuestionerConfig().catch(error => {});
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const { questionerConfig: { data: nextQuestionerConfig }} = nextProps;
+    const { questionerConfig: { data: questionerConfig }} = this.props;
+    if (!questionerConfig && nextQuestionerConfig) {
+      const answers = this.formDefaultAnswers(nextQuestionerConfig);
+      this.setState({ answers });
+    }
+  }
+
+  formDefaultAnswers(questionerConfig) {
+    const { steps } = questionerConfig;
+    const answers = [];
+    steps.forEach((stepConfig, step) => {
+      const { type, appearance } = stepConfig;
+      if (type === 'select' && appearance === 'switcher') {
+        answers[step] = stepConfig.options[0].value;
+      } else if (type === 'select' && appearance === 'slider') {
+        //TODO
+      }
+    });
+    return answers;
+  }
+
+  onForward = async () => {
+    const {
+      questionerConfig: {
+        data: { steps },
+      },
+      saveAnswers,
+      history,
+    } = this.props;
+    const { step, answers } = this.state;
+    if (step === steps.length) {
+      try {
+        await saveAnswers(answers);
+        history.push('result');
+      } catch (e) {}
+    } else {
+      //TODO add validatiion of curr step
+      const isCurrStepValid = this.isStepValid(answers[step]);
+      if (isCurrStepValid) {
+        this.setState(({ step }) => ({ step: step + 1 }));
+      } else {
+        console.log(`${step} step is not valid`);
+        //TODO show error
+      }
+    }
+  }
+
+  isStepValid(value) {
+    if (typeof value === 'object') {
+      const keys = Object.keys(value);
+      if (!keys.length) return false;
+      return !!keys.find(key => !!value[key]);
+    } else {
+      return !!value;
+    }
+  }
+
+  onAnswer = (step, value) => {
+    const answers = [...this.state.answers];
+    answers[step] = value;
+    this.setState({ answers });
   }
 
   render() {
+    const {
+      questionerConfig: {
+        isFetching: questionerConfigFetching,
+        data: questionerConfig,
+      },
+      answersSavingInProgress,
+    } = this.props;
+    const { step, answers } = this.state;
+    const disabled = questionerConfigFetching || answersSavingInProgress;
+
     return (
-      <div className="questioner">
+      <React.Fragment>
         <Helmet>
           <title>Questioner</title>
           <meta
@@ -33,10 +115,26 @@ class Questioner extends React.Component {
             content="Questioner page of Find your monster application"
           />
         </Helmet>
-        <h1>
-          <FormattedMessage {...messages.header} />
-        </h1>
-      </div>
+        {!questionerConfigFetching && questionerConfig && (
+          <React.Fragment>
+            <Question
+              config={questionerConfig.steps[step]}
+              value={answers[step]}
+              id={step}
+              onChange={this.onAnswer}
+            />
+            ,
+            <Button
+              disabled={disabled}
+              valueMessage={
+                messages[step === questionerConfig.steps.length ? 'next' : 'submit']
+              }
+              rightIcon={ArrowForward}
+              onClick={this.onForward}
+            />
+          </React.Fragment>
+        )}
+      </React.Fragment>
     );
   }
 }
@@ -70,6 +168,7 @@ const mapDispatchToProps = (dispatch, ownProps) => (
                 type: actionsTypes.QUESTIONER_CONFIG_FAILURE,
                 data: error,
               });
+              throw error;
             });
         };
       },
@@ -89,6 +188,7 @@ const mapDispatchToProps = (dispatch, ownProps) => (
                 type: actionsTypes.SAVE_ANSWERS_FAILURE,
                 data: error,
               });
+              throw error;
             });
         };
       },
@@ -98,7 +198,7 @@ const mapDispatchToProps = (dispatch, ownProps) => (
 );
 
 Questioner.propTypes = {
-  auth: PropTypes.object.isRequired,
+  history: PropTypes.object.isRequired,
   questionerConfig: PropTypes.shape({
     data: PropTypes.shape({
       steps: PropTypes.array.isRequired,
@@ -117,8 +217,14 @@ const withConnect = connect(
 
 const withReducer = injectReducer({ key: 'questioner', reducer });
 
-export default compose(
+const ConnectedQuestioner = compose(
   // Put `withReducer` before `withConnect`
   withReducer,
   withConnect,
 )(Questioner);
+
+ConnectedQuestioner.propTypes = {
+  auth: PropTypes.object.isRequired,
+};
+
+export default ConnectedQuestioner;

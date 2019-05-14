@@ -11,7 +11,26 @@ function onError(error) {
   //TODO procc error
   console.log(`onfetchError error${error}`);
   throw error;
-};
+}
+
+function procResponse(res) {
+  if (typeof res !== 'object') {
+    throw new Error('Bad response');
+  }
+  const { status, data: rawData } = res;
+
+  if (status < 200 || status >= 400) {
+    throw new Error(`Response with status ${status}`);
+  }
+
+  const { data, error } = rawData;
+
+  if (error) {
+    throw new Error(`Server replied with error: ${error}`);
+  }
+
+  return data;
+}
 
 export async function get(accessToken, url, additionalHeaders = {}, {notAuth = false} = {}) {
   try {
@@ -26,7 +45,7 @@ export async function get(accessToken, url, additionalHeaders = {}, {notAuth = f
       headers,
     };
 
-    return await axios(opts);
+    return procResponse(await axios(opts));
   } catch (error) {
     return onError(error);
   }
@@ -47,7 +66,7 @@ export async function post(accessToken, url, data, additionalHeaders = {}, {notA
       data,
     };
 
-    return await axios(opts);
+    return procResponse(await axios(opts));
   } catch (error) {
     return onError(error);
   }

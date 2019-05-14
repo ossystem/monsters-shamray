@@ -11,8 +11,8 @@ const mailerConfig = {
       user: process.env.MAILER_USER,
       pass: process.env.MAILER_PASS,
     },
-    port: process.env.MAILER_PORT,
-    secure: true,
+    port: +process.env.MAILER_PORT,
+    secure: !!process.env.MAILER_SECURE,
     tls: {
       rejectUnauthorized: false,
     },
@@ -20,7 +20,7 @@ const mailerConfig = {
   from: process.env.MAILER_FROM,
 };
 
-const transport = nodemailer.createTransport(mailerConfig);
+const transport = nodemailer.createTransport(mailerConfig.transport);
 
 const MESSAGE_FROM = `Found your monster <${mailerConfig.from}>`;
 

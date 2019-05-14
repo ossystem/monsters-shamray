@@ -3,8 +3,7 @@
     {
       "question": "Are you afraid of the dark?",
       "type": "select",
-      "multiple": false,
-      "appearance": "checkbox",
+      "appearance": "radio",
       "options": [
         { "name": "I'm not scared at all", "value": "not" },
         { "name": "Sometimes", "value": "sometimes" },
@@ -16,6 +15,7 @@
       "question": "What do you prefer?",
       "type": "select",
       "appearance": "checkbox",
+      "multiple": true,
       "options": [
         { "name": "Fur", "value": "fur" },
         { "name": "Snake skin", "value": "snakeSkin" },
