@@ -3,16 +3,10 @@ import PropTypes from 'prop-types';
 import getDisplayName from 'react-display-name';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
-//import * as actions from '../redux/actions';
-
 
 function withAuth(Component) {
-  class WrappedComponent extends React.Component {
-    render() {
-      return (
-        <Component {...this.props} />
-      );
-    }
+  function WrappedComponent(props) {
+    return <Component {...props} />;
   }
 
   if (process.env.NODE_ENV !== 'production') {

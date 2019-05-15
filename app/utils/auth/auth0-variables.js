@@ -1,5 +1,5 @@
 //TODO move to env vars
-console.log('process.env=',process.env);
+
 export const AUTH_CONFIG = {
   domain: 'dev-cozd59bg.eu.auth0.com',
   clientId: 'sCvsfVJWzmog9KsSJ4CoWQUxVTDL_obY',

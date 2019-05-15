@@ -7,7 +7,7 @@ import { connectRouter } from 'connected-react-router';
 
 import history from 'utils/history';
 import languageProviderReducer from 'containers/LanguageProvider/reducer';
-import authenticationReducer from 'containers/SingInPage/reducer';
+import authenticationReducer from 'containers/SignInPage/reducer';
 
 /**
  * Merges the main reducer with the router state and dynamically injected reducers

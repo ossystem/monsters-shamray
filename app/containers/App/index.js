@@ -11,15 +11,25 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Switch, Route, Redirect } from 'react-router-dom';
 
-import HomePage from 'containers/HomePage';
-import SignInPage from 'containers/SignInPage';
+import Home from 'containers/HomePage';
+import SignIn from 'containers/SignInPage';
 import Callback from 'containers/Callback';
 import Questioner from 'containers/Questioner/Loadable';
-import ResultPage from 'containers/ResultPage/Loadable';
+import Result from 'containers/ResultPage/Loadable';
 import NotFoundPage from 'containers/NotFoundPage/Loadable';
 import { Helmet } from 'react-helmet';
+import withAuth from 'decorators/withAuth';
+import withCheckAuthenticated from 'decorators/withCheckAuthenticated';
+import authenticationAction from 'containers/SignInPage/actions';
+
+const HomePage = withAuth(Home);
+const SignInPage = withAuth(SignIn);
+const QuestionerPage = withAuth(withCheckAuthenticated(Questioner));
+const ResultPage = withAuth(withCheckAuthenticated(Result));
 
 import GlobalStyle from '../../global-styles';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
 
 const handleAuthentication = ({ location, auth }) => {
   if (/access_token|id_token|error/.test(location.hash)) {
@@ -28,20 +38,8 @@ const handleAuthentication = ({ location, auth }) => {
 }
 
 class App extends React.Component {
-  // goTo(route) {
-  //   this.props.history.replace(`/${route}`);
-  // }
-  //
-  // login() {
-  //   this.props.auth.login();
-  // }
-  //
-  // logout() {
-  //   this.props.auth.logout();
-  // }
-
   componentDidMount() {
-    const { renewSession } = this.props.auth;
+    const { renewSession } = this.props;
 
     if (localStorage.getItem('isLoggedIn') === 'true') {
       renewSession();
@@ -49,16 +47,7 @@ class App extends React.Component {
   }
 
   render() {
-    // const { isAuthenticated, userHasScopes } = this.props.auth;
     const { auth } = this.props;
-
-    const withCheckAuthenticated = Component => props => (
-      !auth.isAuthenticated() ? (
-        <Redirect to="login" />
-      ) : (
-        <Component auth={auth} {...props} />
-      )
-    );
 
     return (
       <div>
@@ -69,30 +58,23 @@ class App extends React.Component {
           <meta name="description" content="Find your monster - A React.js application" />
         </Helmet>
         <Switch>
-          <Route
-            exact
-            path="/"
-            render={props => <HomePage auth={auth} {...props} />}
-          />
+          <Route exact path="/" component={HomePage} />
           <Route
             path="/login"
             render={props =>
-              auth.isAuthenticated() ? (
+              auth.auth.isAuthenticated() ? (
                 <Redirect to="/" />
               ) : (
-                <SignInPage auth={auth} {...props} />
+                <SignInPage {...props} />
               )
             }
           />
-          <Route
-            path="/questioner"
-            render={withCheckAuthenticated(Questioner)}
-          />
-          <Route path="/result" render={withCheckAuthenticated(ResultPage)} />
+          <Route path="/questioner" component={QuestionerPage} />
+          <Route path="/result" component={ResultPage} />
           <Route
             path="/callback"
             render={props => {
-              handleAuthentication({ location: props.location, auth });
+              handleAuthentication({ location: props.location, auth: auth.auth });
               return <Callback {...props} />;
             }}
           />
@@ -107,6 +89,24 @@ class App extends React.Component {
 App.propTypes = {
   locale: PropTypes.string,
   auth: PropTypes.object.isRequired,
+  renewSession: PropTypes.func.isRequired,
 };
 
-export default App;
+const mapDispatchToProps = (dispatch, ownProps) => (
+  bindActionCreators(
+    {
+      renewSession() {
+        const { auth: { auth } } = ownProps;
+        return authenticationAction(() => auth.renewSession());
+      },
+    },
+    dispatch,
+  )
+);
+
+export default withAuth(
+  connect(
+    undefined,
+    mapDispatchToProps,
+  )(App),
+);

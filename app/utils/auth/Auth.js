@@ -32,10 +32,7 @@ export default class Auth {
   }
 
   clone() {
-    const { accessToken, idToken, expiresAt } = this;
-    const auth = new Auth();
-    Object.assign(auth, { accessToken, idToken, expiresAt });
-    return auth;
+    return Object.create(this);
   }
 
   async login(email, password, redirectAfterLogin) {

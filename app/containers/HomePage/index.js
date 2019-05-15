@@ -6,7 +6,8 @@ import { FormattedMessage } from 'react-intl';
 import messages from './messages';
 
 export default function HomePage(props) {
-  const getUri = (auth => () => auth.isAuthenticated() ? '/questioner' : '/login')(props.auth);
+  const { auth: { auth } } = props;
+  const getUri = (auth => () => auth.isAuthenticated() ? '/questioner' : '/login')(auth);
   const onStart = ((getUri, history) => () => {
     history.push(getUri());
   })(getUri, props.history);

@@ -7,19 +7,17 @@
 import {
   AUTHENTICATION_REQUEST,
   AUTHENTICATION_SUCCESS,
-  AUTHENTICATION_FAILURE
+  AUTHENTICATION_FAILURE,
 } from './constants';
 
-export function authenticationAction(action) {
+export default function authenticationAction(action) {
   return dispatch => {
-    if (action.then) {
-      dispatch({ type: AUTHENTICATION_REQUEST });
-    }
+    dispatch({ type: AUTHENTICATION_REQUEST });
     try {
       action();
       return dispatch({ type: AUTHENTICATION_SUCCESS });
     } catch (e) {
       return dispatch({ type: AUTHENTICATION_FAILURE });
     }
-  }
+  };
 }
