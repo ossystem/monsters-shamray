@@ -10,6 +10,7 @@ import {
   AUTHENTICATION_REQUEST,
   AUTHENTICATION_SUCCESS,
   AUTHENTICATION_FAILURE,
+  STOP_FETCHING,
 } from './constants';
 
 export const initialState = {
@@ -29,6 +30,7 @@ const authenticationReducer = (state = initialState, action) =>
         draft.isFetching = false;
         break;
       case AUTHENTICATION_FAILURE:
+      case STOP_FETCHING:
         draft.isFetching = false;
         break;
     }

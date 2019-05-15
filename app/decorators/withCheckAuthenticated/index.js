@@ -12,6 +12,12 @@ function withCheckAuthenticated(Component) {
     } else if (isFetching) {
       return null;
     } else {
+      const { location } = props;
+      if (location) {
+        const { pathname, search, hash } = location;
+        const redirectAfterLogin = `${pathname}${search}${hash}`;
+        localStorage.setItem('redirectAfterLogin', redirectAfterLogin);
+      }
       return <Redirect to="login" />;
     }
   }

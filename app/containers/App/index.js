@@ -20,7 +20,7 @@ import NotFoundPage from 'containers/NotFoundPage/Loadable';
 import { Helmet } from 'react-helmet';
 import withAuth from 'decorators/withAuth';
 import withCheckAuthenticated from 'decorators/withCheckAuthenticated';
-import authenticationAction from 'containers/SignInPage/actions';
+import { authenticationAction, stopFetching } from 'containers/SignInPage/actions';
 
 const HomePage = withAuth(Home);
 const SignInPage = withAuth(SignIn);
@@ -39,10 +39,12 @@ const handleAuthentication = ({ location, auth }) => {
 
 class App extends React.Component {
   componentDidMount() {
-    const { renewSession } = this.props;
+    const { renewSession, stopFetching } = this.props;
 
     if (localStorage.getItem('isLoggedIn') === 'true') {
       renewSession();
+    } else {
+      stopFetching();
     }
   }
 
@@ -90,10 +92,12 @@ App.propTypes = {
   locale: PropTypes.string,
   auth: PropTypes.object.isRequired,
   renewSession: PropTypes.func.isRequired,
+  stopFetching: PropTypes.func.isRequired,
 };
 
-const mapDispatchToProps = (dispatch, ownProps) => (
-  bindActionCreators(
+const mapDispatchToProps = (dispatch, ownProps) => ({
+  stopFetching: () => dispatch(stopFetching()),
+  ...bindActionCreators(
     {
       renewSession() {
         const { auth: { auth } } = ownProps;
@@ -101,8 +105,8 @@ const mapDispatchToProps = (dispatch, ownProps) => (
       },
     },
     dispatch,
-  )
-);
+  ),
+});
 
 export default withAuth(
   connect(

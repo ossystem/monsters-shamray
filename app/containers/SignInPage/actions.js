@@ -8,9 +8,10 @@ import {
   AUTHENTICATION_REQUEST,
   AUTHENTICATION_SUCCESS,
   AUTHENTICATION_FAILURE,
+  STOP_FETCHING,
 } from './constants';
 
-export default function authenticationAction(action) {
+export function authenticationAction(action) {
   return dispatch => {
     dispatch({ type: AUTHENTICATION_REQUEST });
     try {
@@ -20,4 +21,8 @@ export default function authenticationAction(action) {
       return dispatch({ type: AUTHENTICATION_FAILURE });
     }
   };
+}
+
+export function stopFetching() {
+  return { type: STOP_FETCHING };
 }

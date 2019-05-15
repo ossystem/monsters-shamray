@@ -12,7 +12,7 @@ import { withStyles } from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
 import ArrowForward from '@material-ui/icons/ArrowForward';
 import messages from './messages';
-import authenticationAction from 'containers/SignInPage/actions';
+import { authenticationAction } from 'containers/SignInPage/actions';
 import { connect } from 'react-redux';
 import { bindActionCreators, compose } from 'redux';
 
