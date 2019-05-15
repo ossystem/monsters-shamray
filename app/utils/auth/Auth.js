@@ -1,6 +1,14 @@
 import auth0 from 'auth0-js';
 import history from '../history';
-import { AUTH_CONFIG } from './auth0-variables';
+
+const {
+  AUTH_CONFIG_DOMAIN,
+  AUTH_CONFIG_CLIENT_ID,
+  AUTH_CONFIG_CALLBACK_URL,
+  AUTH_CONFIG_REALM,
+  AUTH_CONFIG_AUDIENCE,
+  AUTH_CONFIG_ISSUER,
+} = process.env;
 
 export default class Auth {
   accessToken;
@@ -10,14 +18,14 @@ export default class Auth {
   expiresAt;
 
   auth0 = new auth0.WebAuth({
-    domain: AUTH_CONFIG.domain,
-    clientID: AUTH_CONFIG.clientId,
-    redirectUri: AUTH_CONFIG.callbackUrl,
-    realm: AUTH_CONFIG.realm,
+    domain: AUTH_CONFIG_DOMAIN,
+    clientID: AUTH_CONFIG_CLIENT_ID,
+    redirectUri: AUTH_CONFIG_CALLBACK_URL,
+    realm: AUTH_CONFIG_REALM,
     responseType: 'token id_token',
     scope: 'openid',
-    audience: AUTH_CONFIG.audience,
-    issuer: AUTH_CONFIG.issuer,
+    audience: AUTH_CONFIG_AUDIENCE,
+    issuer: AUTH_CONFIG_ISSUER,
   });
 
   constructor() {
@@ -59,8 +67,8 @@ export default class Auth {
         this.navigateAfterLogin();
       } else if (err) {
         history.replace('/');
-        //console.log(err);
-        //alert(`Error: ${err.error}. Check the console for further details.`);
+        // console.log(err);
+        // alert(`Error: ${err.error}. Check the console for further details.`);
       }
     });
   }
