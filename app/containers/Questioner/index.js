@@ -1,7 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Helmet } from 'react-helmet';
-import Index from '../../components/question';
+import QuestionerLayout from 'components/questionerLayout';
+import Layout from 'components/layout';
+import Question from '../../components/question';
 import Button from 'components/bootstrapButton';
 import ArrowForward from '@material-ui/icons/ArrowForward';
 import { connect } from 'react-redux';
@@ -11,6 +13,14 @@ import reducer from './reducer';
 import api from 'api';
 import messages from './messages';
 import * as actionsTypes from './constants';
+import monster1 from 'images/bespectacledMonster.png';
+import monster2 from 'images/blueMonster.png';
+import monster3 from 'images/hatMonster.png';
+import monster4 from 'images/purpleMonster.png';
+import monster5 from 'images/redMonster.png';
+import monster6 from 'images/yellowMonster.png';
+
+const images = [monster1, monster2, monster3, monster4, monster5, monster6];
 
 class Questioner extends React.Component {
   constructor(props) {
@@ -22,6 +32,16 @@ class Questioner extends React.Component {
     const answers = questionerConfig
       ? this.formDefaultAnswers(questionerConfig)
       : [];
+
+    //TODO
+    const steps = 5;
+    let restIng = images;
+    this.rndImages = [];
+    for (let step = 0; step < steps; step++) {
+      const image = restIng[Math.round((restIng.length - 1) * Math.random())];
+      this.rndImages[step] = image;
+      restIng = restIng.filter(i => i !== image);
+    }
 
     this.state = { step: 0, answers };
   }
@@ -106,8 +126,10 @@ class Questioner extends React.Component {
     const { step, answers } = this.state;
     const disabled = questionerConfigFetching || answersSavingInProgress;
 
+    const monsterImg = this.rndImages[step];
+
     return (
-      <React.Fragment>
+      <Layout>
         <Helmet>
           <title>Questioner</title>
           <meta
@@ -116,8 +138,12 @@ class Questioner extends React.Component {
           />
         </Helmet>
         {!questionerConfigFetching && questionerConfig && (
-          <React.Fragment>
-            <Index
+          <QuestionerLayout
+            monsterImg={monsterImg}
+            stepNum={step + 1}
+            totalSteps={questionerConfig.steps.length}
+          >
+            <Question
               config={questionerConfig.steps[step]}
               value={answers[step]}
               id={step}
@@ -132,9 +158,9 @@ class Questioner extends React.Component {
               rightIcon={ArrowForward}
               onClick={this.onForward}
             />
-          </React.Fragment>
+          </QuestionerLayout>
         )}
-      </React.Fragment>
+      </Layout>
     );
   }
 }

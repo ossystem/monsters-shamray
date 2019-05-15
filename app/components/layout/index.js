@@ -1,23 +1,32 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Paper from '@material-ui/core/Paper';
 import { withStyles } from '@material-ui/core/styles';
+import logo from 'images/miniLogo.png';
+import messages from './messages';
+import { FormattedMessage } from 'react-intl';
 
 const styles = theme => ({
   root: {
-    // ...theme.mixins.gutters(),
-    // paddingTop: theme.spacing.unit * 2,
-    // paddingBottom: theme.spacing.unit * 2,
+    position: 'relative',
+  },
+  logo: {
+    position: 'absolute',
+    width: '416px',
+    top: '72px',
+  },
+  logoImg: {
+    maxWidth: '100%',
   },
 });
 
 function Layout({ children, classes }) {
   return (
-    <div>
-      {/*<img src={}/>*/}
-      <Paper className={classes.root} elevation={1}>
-        {children}
-      </Paper>
+    <div className={classes.root} >
+      <div className={classes.logo} >
+        <img src={logo} alt="logo" className={classes.logoImg} />
+        <FormattedMessage {...messages.logo} />
+      </div>
+      {children}
     </div>
   );
 }

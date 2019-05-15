@@ -1,6 +1,7 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
 import { FormattedMessage } from 'react-intl';
+import QuestionerLayout from 'components/questionerLayout';
 import Layout from 'components/layout';
 import Button from 'components/bootstrapButton';
 import PropTypes from 'prop-types';
@@ -15,6 +16,7 @@ import messages from './messages';
 import { authenticationAction } from 'containers/SignInPage/actions';
 import { connect } from 'react-redux';
 import { bindActionCreators, compose } from 'redux';
+import monsterImg from 'images/redMonster.png';
 
 const styles = theme => ({
   root: {
@@ -94,12 +96,12 @@ class SignInPage extends React.Component {
     const disabled = this.isFormSubmitionDisabled({ email, password, emailError, passwordError });
 
     return (
-      <React.Fragment>
+      <Layout>
         <Helmet>
           <title>SignInPage</title>
           <meta name="description" content="SignIn page" />
         </Helmet>
-        <Layout>
+        <QuestionerLayout monsterImg={monsterImg} stepNum="1" totalSteps="5" >
           <Typography variant="h1" gutterBottom>
             <FormattedMessage {...messages.header} />
           </Typography>
@@ -150,8 +152,8 @@ class SignInPage extends React.Component {
               type="submit"
             />
           </form>
-        </Layout>
-      </React.Fragment>
+        </QuestionerLayout>
+      </Layout>
     );
   }
 }

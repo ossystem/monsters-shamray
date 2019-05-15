@@ -59,7 +59,7 @@ export default function Question({ config, onChange, id, value }) {
   const onAnswer = (...rest) => onChange(id, ...rest);
   return (
     <React.Fragment>
-      <Typography variant="h1" gutterBottom>
+      <Typography variant="h4" gutterBottom>
         {question}
       </Typography>
       {renderQuestionBody(config, value, onAnswer)}
