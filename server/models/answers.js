@@ -31,11 +31,6 @@ module.exports = (sequelize, dataTypes) => {
         type: dataTypes.STRING,
         allowNull: false,
       },
-      createdAt: {
-        type: dataTypes.DATE,
-        allowNull: false,
-        defaultValue: sequelize.NOW,
-      },
     },
     {
       tableName: 'answers',

@@ -62,8 +62,8 @@ QuestionerLayout.propTypes = {
   ]).isRequired,
   classes: PropTypes.object.isRequired,
   monsterImg: PropTypes.string.isRequired,
-  stepNum: PropTypes.string.isRequired,
-  totalSteps: PropTypes.string.isRequired,
+  stepNum: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+  totalSteps: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
 };
 
 export default withStyles(styles)(QuestionerLayout);

@@ -59,8 +59,8 @@ export default class Auth {
         this.navigateAfterLogin();
       } else if (err) {
         history.replace('/');
-        console.log(err);
-        alert(`Error: ${err.error}. Check the console for further details.`);
+        //console.log(err);
+        //alert(`Error: ${err.error}. Check the console for further details.`);
       }
     });
   }
