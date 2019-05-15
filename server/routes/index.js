@@ -1,5 +1,6 @@
 const { API_URL } = require('../../constants');
 const mailer = require('../services/mailer');
+const determineTypeOfMonster = require('../services/determineTypeOfMonster');
 const questionerConfig = require('../data/questionerConfig');
 const models = require('../models');
 
@@ -13,13 +14,21 @@ module.exports = function(app, middlewares) {
 
   app.post(`${API_URL}/saveAnswers`, checkJwt, async (req, res, next) => {
     try {
+      const answers = req.body;
+      const typeOfMonster = determineTypeOfMonster(questionerConfig, answers);
+
       const sendOnEmail = async () => {
         try {
+          const addresse = process.env.ADDRESSE_EMAIL;
+          if (!addresse) {
+            throw new Error(
+              'addresse email is not specified, please set ADDRESSE_EMAIL env var',
+            );
+          }
           await mailer.init();
-          const addresse = 'okeanrst@gmail.com';
           const subject = 'Found your monster: Your result';
           const mailTemplate = 'result';
-          const data = {};
+          const data = { typeOfMonster };
           await mailer.sendMailTemplate(addresse, subject, mailTemplate, data);
           console.log('sendOnEmail succsess');
         } catch (error) {
@@ -29,7 +38,6 @@ module.exports = function(app, middlewares) {
       sendOnEmail();
 
       const subject = req.user.sub;
-      const answers = req.body;
 
       const { version: questionerVersion } = questionerConfig;
 
