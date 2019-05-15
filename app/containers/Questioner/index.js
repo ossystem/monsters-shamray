@@ -154,7 +154,7 @@ const mapDispatchToProps = (dispatch, ownProps) => (
     {
       getQuestionerConfig() {
         return dispatch => {
-          const accessToken = ownProps.auth.getAccessToken();
+          const accessToken = ownProps.auth.auth.getAccessToken();
           dispatch({ type: actionsTypes.QUESTIONER_CONFIG_REQUEST });
           return api.getQuestionerConfig(accessToken)
             .then(response => {
@@ -174,7 +174,7 @@ const mapDispatchToProps = (dispatch, ownProps) => (
       },
       saveAnswers(...ars) {
         return dispatch => {
-          const accessToken = ownProps.auth.getAccessToken();
+          const accessToken = ownProps.auth.auth.getAccessToken();
           dispatch({ type: actionsTypes.SAVE_ANSWERS_REQUEST });
           return api.saveAnswers(accessToken, ...ars)
             .then(response => {

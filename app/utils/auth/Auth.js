@@ -28,6 +28,11 @@ export default class Auth {
     this.getAccessToken = this.getAccessToken.bind(this);
     this.getIdToken = this.getIdToken.bind(this);
     this.renewSession = this.renewSession.bind(this);
+    this.clone = this.clone.bind(this);
+  }
+
+  clone() {
+    return Object.create(this);
   }
 
   async login(email, password, redirectAfterLogin) {

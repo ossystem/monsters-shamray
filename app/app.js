@@ -16,7 +16,6 @@ import { ConnectedRouter } from 'connected-react-router';
 import FontFaceObserver from 'fontfaceobserver';
 import history from 'utils/history';
 import 'sanitize.css/sanitize.css';
-import Auth from 'utils/auth/Auth';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import blue from '@material-ui/core/colors/blue';
 
@@ -51,8 +50,6 @@ const initialState = {};
 const store = configureStore(initialState, history);
 const MOUNT_NODE = document.getElementById('app');
 
-const auth = new Auth();
-
 const theme = createMuiTheme({
   palette: {
     primary: blue,
@@ -68,7 +65,7 @@ const render = messages => {
       <LanguageProvider messages={messages}>
         <ConnectedRouter history={history}>
           <MuiThemeProvider theme={theme}>
-            <App auth={auth} />
+            <App />
           </MuiThemeProvider>
         </ConnectedRouter>
       </LanguageProvider>

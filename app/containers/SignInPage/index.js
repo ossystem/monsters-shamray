@@ -12,6 +12,9 @@ import { withStyles } from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
 import ArrowForward from '@material-ui/icons/ArrowForward';
 import messages from './messages';
+import authenticationAction from 'containers/SignInPage/actions';
+import { connect } from 'react-redux';
+import { bindActionCreators, compose } from 'redux';
 
 const styles = theme => ({
   root: {
@@ -33,7 +36,6 @@ class SignInPage extends React.Component {
       password: '',
       emailError: '',
       passwordError: '',
-      loading: false,
     };
   }
 
@@ -54,7 +56,8 @@ class SignInPage extends React.Component {
   }
 
   handleChange = event => {
-    if (this.state.loading) return;
+    const { auth: { isFetching } } = this.props;
+    if (isFetching) return;
     const { id, value } = event.target;
     this.setState({ [id]: value, [`${id}Error`]: '' });
   }
@@ -68,18 +71,13 @@ class SignInPage extends React.Component {
   onSubmit = e => {
     e.preventDefault();
     const { state, isValid, props } = this;
-    const { email, password, loading } = state;
-    if (loading) return;
+    const { email, password } = state;
+    const { login, auth: { isFetching } } = props;
+    if (isFetching) return;
     const { valid, errors: validationErrors } = isValid({ email, password });
     if (valid) {
-      const onProcessingEnd = () => {
-        this.setState({ loading: false });
-      }
-      props.auth
-        .login(email, password, '/questioner')
-        .then(onProcessingEnd)
-        .catch(onProcessingEnd);
-      this.setState({ emailError: '', passwordError: '', loading: true });
+      login(email, password);
+      this.setState({ emailError: '', passwordError: '' });
     } else {
       const { emailError, passwordError } = validationErrors;
       this.setState({ emailError, passwordError });
@@ -91,7 +89,7 @@ class SignInPage extends React.Component {
   }
 
   render() {
-    const { email, password, emailError, passwordError, loading } = this.state;
+    const { email, password, emailError, passwordError } = this.state;
     const { classes } = this.props;
     const disabled = this.isFormSubmitionDisabled({ email, password, emailError, passwordError });
 
@@ -160,8 +158,29 @@ class SignInPage extends React.Component {
 
 SignInPage.propTypes = {
   auth: PropTypes.object.isRequired,
-  //login: PropTypes.func.isRequired,
+  login: PropTypes.func.isRequired,
   classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(SignInPage);
+const mapDispatchToProps = (dispatch, ownProps) => (
+  bindActionCreators(
+    {
+      login(email, password) {
+        const { auth: { auth } } = ownProps;
+        return authenticationAction(() => auth.login(email, password, '/questioner'));
+      },
+    },
+    dispatch,
+  )
+);
+
+const withConnect = connect(
+  undefined,
+  mapDispatchToProps,
+);
+
+export default compose(
+  // Put `withReducer` before `withConnect`
+  withStyles(styles),
+  withConnect,
+)(SignInPage);
