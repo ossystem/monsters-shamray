@@ -8,9 +8,9 @@ const jwt = require('express-jwt');
 //const jwtAuthz = require('express-jwt-authz');
 const jwksRsa = require('jwks-rsa');
 const logger = require('./logger');
-const initDB = require('./boot/mySQL');
-const initRouters = require('./routes');
 require('dotenv').config();
+const initRouters = require('./routes');
+const DB = require('./DB');
 
 const argv = require('./argv');
 const port = require('./port');
@@ -18,22 +18,34 @@ const setup = require('./middlewares/frontendMiddleware');
 
 const pid = process.pid;
 
+let server;
+
+DB.connect();
+
 process
   .on('SIGINT', () => {
     console.log(`Process ${pid} stopped manually`);
     process.exit(0);
-    //db.closeConnection();
-    /*server.close(() => {
+    DB.closeConnection();
+    if (process && process.exit) {
+      server.close(() => {
+        process.exit(0);
+      });
+    } else {
       process.exit(0);
-    });*/
+    }
   })
   .on('SIGTERM', () => {
     console.log(`Process ${pid} stopped`);
     process.exit(0);
-    //db.closeConnection();
-    /*server.close(() => {
+    DB.closeConnection();
+    if (process && process.exit) {
+      server.close(() => {
+        process.exit(0);
+      });
+    } else {
       process.exit(0);
-    });*/
+    }
   })
   .on('unhandledRejection', error => {
     logger.error(`${__filename}: Unhandled rejection: ${error}. Pid: ${pid}`);
@@ -47,7 +59,6 @@ process
     // db.closeConnection();
     // process.exit(1);
   });
-
 
 const isDev = process.env.NODE_ENV !== 'production';
 const ngrok =
@@ -96,8 +107,6 @@ const checkJwt = jwt({
 //const checkScopes = jwtAuthz([ 'read:messages' ]);
 //const checkScopesAdmin = jwtAuthz([ 'write:messages' ]);
 
-initDB();
-
 // If you need a backend, e.g. an API, add your custom backend-specific middleware here
 // app.use('/api', myApi);
 initRouters(app, { checkJwt });
@@ -121,7 +130,7 @@ app.get('*.js', (req, res, next) => {
 });
 
 // Start your app.
-app.listen(port, host, async err => {
+server = app.listen(port, host, async err => {
   if (err) {
     return logger.error(err.message);
   }

@@ -1,6 +1,7 @@
 const { API_URL } = require('../../constants');
 const mailer = require('../services/mailer');
 const questionerConfig = require('../data/questionerConfig');
+const models = require('../models');
 
 module.exports = function(app, middlewares) {
   const { checkJwt } = middlewares;
@@ -27,7 +28,33 @@ module.exports = function(app, middlewares) {
       }
       sendOnEmail();
 
-      res.json({data: 'dev in progress'});
+      const subject = req.user.sub;
+      const answers = req.body;
+
+      const { version: questionerVersion } = questionerConfig;
+
+      const lastAttemptRecord = await models.answers.findOne({
+        attributes: ['attempt'],
+        where: { subject, questionerVersion },
+        order: [['attempt', 'DESC']],
+      });
+      const attempt = lastAttemptRecord ? lastAttemptRecord.attempt + 1 : 1;
+
+      const answersRecords = [];
+      answers.forEach((answer, index) => {
+        const record = {
+          subject,
+          questionerVersion,
+          attempt,
+          question: index,
+          value: JSON.stringify(answer),
+        };
+        answersRecords.push(record);
+      });
+
+      await models.answers.bulkCreate(answersRecords);
+
+      res.json({ data: answers });
     } catch (e) {
       next(e);
     }
