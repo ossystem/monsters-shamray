@@ -1,10 +1,17 @@
-//TODO move to env vars
+const {
+  AUTH_CONFIG_DOMAIN,
+  AUTH_CONFIG_CLIENT_ID,
+  AUTH_CONFIG_CALLBACK_URL,
+  AUTH_CONFIG_REALM,
+  AUTH_CONFIG_AUDIENCE,
+  AUTH_CONFIG_ISSUER,
+} = process.env;
 
 export const AUTH_CONFIG = {
-  domain: 'dev-cozd59bg.eu.auth0.com',
-  clientId: 'sCvsfVJWzmog9KsSJ4CoWQUxVTDL_obY',
-  callbackUrl: 'https://shamray-monsters.ossystem.ua/callback',
-  realm: 'Username-Password-Authentication',
-  audience: 'https://dev-cozd59bg.eu.auth0.com/api/v2/',
-  issuer: 'https://dev-cozd59bg.eu.auth0.com',
-}
+  domain: AUTH_CONFIG_DOMAIN,
+  clientId: AUTH_CONFIG_CLIENT_ID,
+  callbackUrl: AUTH_CONFIG_CALLBACK_URL,
+  realm: AUTH_CONFIG_REALM,
+  audience: AUTH_CONFIG_AUDIENCE,
+  issuer: AUTH_CONFIG_ISSUER,
+};

@@ -113,6 +113,12 @@ module.exports = options => ({
     // drop any unreachable code.
     new webpack.EnvironmentPlugin({
       NODE_ENV: 'development',
+      AUTH_CONFIG_DOMAIN: process.env.REACT_APP_AUTH_CONFIG_DOMAIN,
+      AUTH_CONFIG_CLIENT_ID: process.env.REACT_APP_AUTH_CONFIG_CLIENT_ID,
+      AUTH_CONFIG_CALLBACK_URL: process.env.REACT_APP_AUTH_CONFIG_CALLBACK_URL,
+      AUTH_CONFIG_REALM: process.env.REACT_APP_AUTH_CONFIG_REALM,
+      AUTH_CONFIG_AUDIENCE: process.env.REACT_APP_AUTH_CONFIG_AUDIENCE,
+      AUTH_CONFIG_ISSUER: process.env.REACT_APP_AUTH_CONFIG_ISSUER,
     }),
   ]),
   resolve: {
