@@ -34,7 +34,10 @@ const styles = theme => ({
     width: '100%',
     marginTop: theme.spacing.unit * 5,
   },
-  formControl: {},
+  formControl: {
+    width: theme.spacing.unit * 42,
+  },
+  formControlUnderline: {},
   formButton: {
     alignSelf: 'flex-end',
     marginTop: theme.spacing.unit * 4,
@@ -104,12 +107,12 @@ class SignInPage extends React.Component {
   }
 
   render() {
-    const { email, password, emailError, passwordError } = this.state;
+    const { email, password, emailError, passwordError, history } = this.state;
     const { classes } = this.props;
     const disabled = this.isFormSubmitionDisabled({ email, password, emailError, passwordError });
 
     return (
-      <Layout>
+      <Layout history={history}>
         <Helmet>
           <title>SignInPage</title>
           <meta name="description" content="SignIn page" />
@@ -126,9 +129,9 @@ class SignInPage extends React.Component {
             <FormControl
               className={classes.formControl}
               error={!!emailError}
-              fullWidth
+              classes={{ underline: classes.formControlUnderline }}
             >
-              <InputLabel htmlFor="email">Email</InputLabel>
+              <InputLabel htmlFor="email">Your Email</InputLabel>
               <Input
                 id="email"
                 value={email}
@@ -143,7 +146,6 @@ class SignInPage extends React.Component {
             <FormControl
               className={classes.formControl}
               error={!!passwordError}
-              fullWidth
             >
               <InputLabel htmlFor="password">Password</InputLabel>
               <Input

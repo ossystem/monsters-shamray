@@ -101,9 +101,9 @@ class ResultPage extends React.Component {
   }
 
   async componentDidMount() {
-    const { history, questionerConfig, savedAnswers } = this.props;
-    if (!questionerConfig || !savedAnswers) {
-      //history.replace('/questioner');
+    const { history, questionerConfig, answers } = this.props;
+    if (!questionerConfig || !answers) {
+      history.replace('/questioner');
     }
   }
 
@@ -145,10 +145,10 @@ class ResultPage extends React.Component {
   }
 
   render() {
-    const { classes, questionerConfig, savedAnswers } = this.props;
+    const { classes, questionerConfig, answers, history } = this.props;
 
     return (
-      <Layout className={classes.layout} >
+      <Layout className={classes.layout} history={history} >
         <Helmet>
           <title>Questioner</title>
           <meta
@@ -160,7 +160,7 @@ class ResultPage extends React.Component {
           <div className={classes.header}>
             <FormattedMessage {...messages.header} />
           </div>
-          {questionerConfig && savedAnswers && (
+          {questionerConfig && answers && (
             <React.Fragment>
               <Paper className={classes.answers} elevation={5}>
                 <Paper className={classes.youAre} elevation={10}>
@@ -168,7 +168,7 @@ class ResultPage extends React.Component {
                     <FormattedMessage {...messages.you_are} />
                   </span>
                 </Paper>
-                {this.renderAnswers(questionerConfig.steps, savedAnswers, classes)}
+                {this.renderAnswers(questionerConfig.steps, answers, classes)}
               </Paper>
               <Paper className={classes.monsterImgContainer} elevation={0}>
                 <img className={classes.monsterImg} src={this.rndImage} />
@@ -184,7 +184,7 @@ class ResultPage extends React.Component {
 const mapStateToProps = (state, ownProps) => {
   const {
     questioner: {
-      questionerConfig,
+      questionerConfig: { data: questionerConfig } = {},
       savedAnswers: { data: answers } = {},
     } = {},
   } = state;
@@ -193,10 +193,7 @@ const mapStateToProps = (state, ownProps) => {
 
 ResultPage.propTypes = {
   questionerConfig: PropTypes.shape({
-    data: PropTypes.shape({
-      steps: PropTypes.array.isRequired,
-    }),
-    isFetching: PropTypes.bool.isRequired,
+    steps: PropTypes.array.isRequired,
   }),
   answers: PropTypes.array.isRequired,
   history: PropTypes.object.isRequired,

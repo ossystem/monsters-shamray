@@ -86,7 +86,7 @@ class Questioner extends React.Component {
     if (step >= steps.length - 1) {
       try {
         await saveAnswers(answers);
-        history.push('result');
+        history.push('/result');
       } catch (e) {}
     } else {
       //TODO add validatiion of curr step
@@ -124,6 +124,7 @@ class Questioner extends React.Component {
       },
       answersSavingInProgress,
       classes,
+      history,
     } = this.props;
     const { step, answers } = this.state;
 
@@ -136,7 +137,7 @@ class Questioner extends React.Component {
     const monsterImg = this.rndImages[step];
 
     return (
-      <Layout>
+      <Layout history={history}>
         <Helmet>
           <title>Questioner</title>
           <meta
@@ -173,12 +174,6 @@ class Questioner extends React.Component {
 }
 
 const styles = theme => ({
-  root: {
-
-  },
-  questionBody: {
-
-  },
   nextButton: {
     alignSelf: 'flex-end',
     marginTop: theme.spacing.unit * 4,

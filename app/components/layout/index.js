@@ -27,10 +27,11 @@ const styles = theme => ({
   },
 });
 
-function Layout({ children, classes, className }) {
+function Layout({ children, classes, className, history }) {
+  const onHomePage = () => history.push('/');
   return (
     <div className={classNames(classes.root, className)}>
-      <div className={classes.logo}>
+      <div className={classes.logo} onClick={onHomePage} >
         <img src={logo} alt="logo" className={classes.logoImg} />
         <div className={classes.sublabel}>
           <FormattedMessage {...messages.logo} />
@@ -48,6 +49,7 @@ Layout.propTypes = {
   ]).isRequired,
   classes: PropTypes.object.isRequired,
   className: PropTypes.string,
+  history: PropTypes.object.isRequired,
 };
 
 export default withStyles(styles)(Layout);
