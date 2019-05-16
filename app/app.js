@@ -17,7 +17,8 @@ import FontFaceObserver from 'fontfaceobserver';
 import history from 'utils/history';
 import 'sanitize.css/sanitize.css';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
-import blue from '@material-ui/core/colors/blue';
+import green from '@material-ui/core/colors/green';
+import grey from '@material-ui/core/colors/grey';
 
 // Import root app
 import App from 'containers/App';
@@ -52,11 +53,28 @@ const MOUNT_NODE = document.getElementById('app');
 
 const theme = createMuiTheme({
   palette: {
-    primary: blue,
+    primary: {
+      main: grey[800],
+    },
+    secondary: {
+      main: green[300],
+    },
   },
   typography: {
     useNextVariants: true,
   },
+  fontFamily: [
+    '-apple-system',
+    'BlinkMacSystemFont',
+    '"Segoe UI"',
+    'Roboto',
+    '"Helvetica Neue"',
+    'Arial',
+    'sans-serif',
+    '"Apple Color Emoji"',
+    '"Segoe UI Emoji"',
+    '"Segoe UI Symbol"',
+  ].join(','),
 });
 
 const render = messages => {

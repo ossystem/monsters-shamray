@@ -1,17 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Paper from '@material-ui/core/Paper';
-import Typography from '@material-ui/core/Typography';
 import { withStyles } from '@material-ui/core/styles';
 import messages from './messages';
 import { FormattedMessage } from 'react-intl';
-//import green from '@material-ui/core/colors/green';
+import green from '@material-ui/core/colors/green';
 
 const styles = theme => ({
   root: {
-    // ...theme.mixins.gutters(),
     paddingTop: theme.spacing.unit * 11,
-    // paddingBottom: theme.spacing.unit * 2,
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'start',
@@ -24,16 +21,29 @@ const styles = theme => ({
   paper: {
     width: theme.spacing.unit * 123,
     height: theme.spacing.unit * 90,
-    padding: theme.spacing.unit * 8,
-
+    padding: theme.spacing.unit * 7,
   },
   stepper: {
     width: theme.spacing.unit * 33,
     height: theme.spacing.unit * 10,
     marginLeft: -theme.spacing.unit * 16,
     borderRadius: theme.spacing.unit / 2,
-    backgroundColor: 'green',
+    backgroundColor: green[300],
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  stepperSign: {
     color: 'white',
+    fontWeight: 600,
+    fontSize: '32px',
+  },
+  questionBody: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'start',
+    alignItems: 'flex-start',
+    marginTop: theme.spacing.unit * 13,
   },
 });
 
@@ -42,14 +52,16 @@ function QuestionerLayout({ children, classes, monsterImg, stepNum, totalSteps }
     <div className={classes.root} >
       <img src={monsterImg} className={classes.monsterImg} />
       <Paper className={classes.paper} elevation={1}>
-        <div className={classes.stepper} >
-          <Typography variant="h6" gutterBottom>
+        <Paper className={classes.stepper} elevation={10}>
+          <span className={classes.stepperSign}>
             {`${stepNum} `}
             <FormattedMessage {...messages.from} />
             {` ${totalSteps}`}
-          </Typography>
-        </div>
-        {children}
+          </span>
+        </Paper>
+        <Paper className={classes.questionBody} elevation={0}>
+          {children}
+        </Paper>
       </Paper>
     </div>
   );

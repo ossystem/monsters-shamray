@@ -10,6 +10,7 @@ import { connect } from 'react-redux';
 import { compose, bindActionCreators } from 'redux';
 import injectReducer from 'utils/injectReducer';
 import reducer from './reducer';
+import { withStyles } from '@material-ui/core/styles';
 import api from 'api';
 import messages from './messages';
 import * as actionsTypes from './constants';
@@ -122,9 +123,15 @@ class Questioner extends React.Component {
         data: questionerConfig,
       },
       answersSavingInProgress,
+      classes,
     } = this.props;
     const { step, answers } = this.state;
-    const disabled = questionerConfigFetching || answersSavingInProgress;
+
+    const answer = answers[step];
+    const disabled =
+      questionerConfigFetching ||
+      answersSavingInProgress ||
+      typeof answer === 'undefined';
 
     const monsterImg = this.rndImages[step];
 
@@ -145,18 +152,18 @@ class Questioner extends React.Component {
           >
             <Question
               config={questionerConfig.steps[step]}
-              value={answers[step]}
+              value={answer}
               id={step}
               onChange={this.onAnswer}
             />
-            ,
             <Button
               disabled={disabled}
               valueMessage={
-                messages[step === questionerConfig.steps.length ? 'next' : 'submit']
+                messages[step < questionerConfig.steps.length - 1 ? 'next' : 'submit']
               }
               rightIcon={ArrowForward}
               onClick={this.onForward}
+              className={classes.nextButton}
             />
           </QuestionerLayout>
         )}
@@ -164,6 +171,19 @@ class Questioner extends React.Component {
     );
   }
 }
+
+const styles = theme => ({
+  root: {
+
+  },
+  questionBody: {
+
+  },
+  nextButton: {
+    alignSelf: 'flex-end',
+    marginTop: theme.spacing.unit * 4,
+  },
+});
 
 const mapStateToProps = (state, ownProps) => {
   const {
@@ -234,6 +254,7 @@ Questioner.propTypes = {
   answersSavingInProgress: PropTypes.bool.isRequired,
   saveAnswers: PropTypes.func.isRequired,
   getQuestionerConfig: PropTypes.func.isRequired,
+  classes: PropTypes.object.isRequired,
 };
 
 const withConnect = connect(
@@ -245,6 +266,7 @@ const withReducer = injectReducer({ key: 'questioner', reducer });
 
 const ConnectedQuestioner = compose(
   // Put `withReducer` before `withConnect`
+  withStyles(styles),
   withReducer,
   withConnect,
 )(Questioner);

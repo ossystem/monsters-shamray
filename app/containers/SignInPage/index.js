@@ -10,7 +10,6 @@ import InputLabel from '@material-ui/core/InputLabel';
 import Input from '@material-ui/core/Input';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import { withStyles } from '@material-ui/core';
-import Typography from '@material-ui/core/Typography';
 import ArrowForward from '@material-ui/icons/ArrowForward';
 import messages from './messages';
 import { authenticationAction } from 'containers/SignInPage/actions';
@@ -24,8 +23,22 @@ const styles = theme => ({
     // paddingTop: theme.spacing.unit * 2,
     // paddingBottom: theme.spacing.unit * 2,
   },
-  form: {},
+  header: {
+    fontSize: '68px',
+  },
+  form: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'start',
+    alignItems: 'flex-start',
+    width: '100%',
+    marginTop: theme.spacing.unit * 5,
+  },
   formControl: {},
+  formButton: {
+    alignSelf: 'flex-end',
+    marginTop: theme.spacing.unit * 4,
+  },
 });
 
 class SignInPage extends React.Component {
@@ -102,9 +115,9 @@ class SignInPage extends React.Component {
           <meta name="description" content="SignIn page" />
         </Helmet>
         <QuestionerLayout monsterImg={monsterImg} stepNum="1" totalSteps="5" >
-          <Typography variant="h1" gutterBottom>
+          <div className={classes.header} >
             <FormattedMessage {...messages.header} />
-          </Typography>
+          </div>
           <form
             onSubmit={this.onSubmit}
             className={classes.form}
@@ -150,6 +163,7 @@ class SignInPage extends React.Component {
               valueMessage={messages.submitButton}
               rightIcon={ArrowForward}
               type="submit"
+              className={classes.formButton}
             />
           </form>
         </QuestionerLayout>

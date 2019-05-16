@@ -1,15 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Typography from '@material-ui/core/Typography';
 import FormControl from '@material-ui/core/FormControl';
+import { withStyles } from '@material-ui/core';
 import CheckboxQuestion from './selectRenderers/Checkbox';
 import RadioQuestion from './selectRenderers/Radio';
 import SwitcherQuestion from './selectRenderers/Switcher';
 import SliderQuestion from './selectRenderers/Slider';
 
-const classes = {};
-
-function renderQuestionBody(config, value, onChange) {
+function renderQuestionBody({ config, value, onChange, classes }) {
   const { multiple = false, type, appearance, options } = config;
 
   let result = null;
@@ -21,7 +19,7 @@ function renderQuestionBody(config, value, onChange) {
   }
 
   return (
-    <FormControl component="fieldset" className={classes.formControl}>
+    <FormControl component="fieldset" className={classes.formControl} fullWidth>
       {result}
     </FormControl>
   );
@@ -54,15 +52,29 @@ function renderSelect({ multiple, options, appearance, value, onChange }) {
   return result;
 }
 
-export default function Question({ config, onChange, id, value }) {
+const styles = theme => ({
+  root: {
+    position: 'relative',
+  },
+  question: {
+    fontSize: '68px',
+  },
+  formControl: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'start',
+    alignItems: 'flex-start',
+    marginTop: theme.spacing.unit * 5,
+  },
+});
+
+function Question({ config, onChange, id, value, classes }) {
   const { question } = config;
   const onAnswer = (...rest) => onChange(id, ...rest);
   return (
     <React.Fragment>
-      <Typography variant="h4" gutterBottom>
-        {question}
-      </Typography>
-      {renderQuestionBody(config, value, onAnswer)}
+      <div className={classes.question}>{question}</div>
+      {renderQuestionBody({ config, value, onChange: onAnswer, classes })}
     </React.Fragment>
   );
 }
@@ -80,7 +92,14 @@ Question.propTypes = {
       }),
     ),
   }),
-  value: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+  value: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number,
+    PropTypes.object,
+  ]),
   id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
   onChange: PropTypes.func.isRequired,
+  classes: PropTypes.object.isRequired,
 };
+
+export default withStyles(styles)(Question);

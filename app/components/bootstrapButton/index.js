@@ -7,35 +7,31 @@ import { FormattedMessage } from 'react-intl';
 
 const styles = theme => ({
   root: {
+    alignSelf: 'flex-end',
     boxShadow: 'none',
     textTransform: 'none',
-    fontSize: 16,
+    fontSize: '28px',
     padding: '6px 12px',
-    border: '1px solid',
+    borderRadius: theme.spacing.unit,
     lineHeight: 1.5,
     backgroundColor: '#007bff',
-    borderColor: '#007bff',
-    fontFamily: [
-      '-apple-system',
-      'BlinkMacSystemFont',
-      '"Segoe UI"',
-      'Roboto',
-      '"Helvetica Neue"',
-      'Arial',
-      'sans-serif',
-      '"Apple Color Emoji"',
-      '"Segoe UI Emoji"',
-      '"Segoe UI Symbol"',
-    ].join(','),
+    width: '340px',
+    height: theme.spacing.unit * 11,
   },
   margin: {
     margin: theme.spacing.unit,
   },
+  icon: {
+    fontSize: '38px',
+  },
   leftIcon: {
-    marginRight: theme.spacing.unit,
+    marginRight: theme.spacing.unit * 11,
   },
   rightIcon: {
-    marginLeft: theme.spacing.unit,
+    marginLeft: theme.spacing.unit * 11,
+  },
+  label: {
+    color: 'white',
   },
 });
 
@@ -48,21 +44,32 @@ function BootstrapButton(props) {
     leftIcon: LeftIcon,
     rightIcon: RightIcon,
     type,
+    className,
   } = props;
 
   return (
     <Button
       variant="contained"
-      color="primary"
       disableRipple
-      className={classNames(classes.margin, classes.root)}
+      classes={{ label: classes.label }}
+      className={classNames(classes.margin, classes.root, className)}
       disabled={disabled}
       onClick={onClick}
       type={type}
     >
-      {LeftIcon && <LeftIcon className={classes.leftIcon} />}
+      {LeftIcon && (
+        <LeftIcon
+          className={classNames(classes.leftIcon, classes.icon)}
+          fontSize="inherit"
+        />
+      )}
       <FormattedMessage {...valueMessage} />
-      {RightIcon && <RightIcon className={classes.rightIcon} />}
+      {RightIcon && (
+        <RightIcon
+          className={classNames(classes.rightIcon, classes.icon)}
+          fontSize="inherit"
+        />
+      )}
     </Button>
   );
 }
@@ -78,6 +85,7 @@ BootstrapButton.propTypes = {
   leftIcon: PropTypes.func,
   rightIcon: PropTypes.func,
   type: PropTypes.string,
+  className: PropTypes.string,
 };
 
 export default withStyles(styles)(BootstrapButton);
