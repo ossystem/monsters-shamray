@@ -28,7 +28,7 @@ const styles = theme => ({
     height: theme.spacing.unit * 10,
     marginLeft: -theme.spacing.unit * 16,
     borderRadius: theme.spacing.unit / 2,
-    backgroundColor: green[300],
+    backgroundColor: theme.palette.secondary.main,
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',

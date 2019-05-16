@@ -8,7 +8,7 @@ export default defineMessages({
     defaultMessage: 'Excellent, congratulations, you\'re a monster',
   },
   you_are: {
-    id: `${scope}.header`,
+    id: `${scope}.youAre`,
     defaultMessage: 'You\'re',
   },
 });

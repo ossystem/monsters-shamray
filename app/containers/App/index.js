@@ -129,6 +129,7 @@ const withConnect = connect(
 
 export default compose(
   // Put `withReducer` before `withConnect`
+  withAuth,
   withStyles(styles),
   withConnect,
 )(App);

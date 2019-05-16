@@ -14,19 +14,27 @@ const styles = theme => ({
   logo: {
     position: 'absolute',
     width: '416px',
+    textAlign: 'center',
     top: '72px',
   },
   logoImg: {
+    marginBottom: '20px',
     maxWidth: '100%',
+  },
+  sublabel: {
+    fontSize: '24px',
+    color: 'rgb(182, 211, 142)',
   },
 });
 
 function Layout({ children, classes, className }) {
   return (
-    <div className={classNames(classes.root, className)} >
-      <div className={classes.logo} >
+    <div className={classNames(classes.root, className)}>
+      <div className={classes.logo}>
         <img src={logo} alt="logo" className={classes.logoImg} />
-        <FormattedMessage {...messages.logo} />
+        <div className={classes.sublabel}>
+          <FormattedMessage {...messages.logo} />
+        </div>
       </div>
       {children}
     </div>

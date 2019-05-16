@@ -3,6 +3,13 @@ import PropTypes from 'prop-types';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
+import { withStyles } from '@material-ui/core';
+
+const styles = theme => ({
+  formControlLabel: {
+    fontSize: '18px!important',
+  },
+});
 
 function CheckboxQuestion(props) {
   const { multiple, options, value, onChange, classes = {} } = props;
@@ -27,6 +34,7 @@ function CheckboxQuestion(props) {
           }
           label={opt.name}
           key={opt.value}
+          classes={{ label: classes.formControlLabel }}
         />
       ))}
     </FormGroup>
@@ -43,6 +51,7 @@ CheckboxQuestion.propTypes = {
   ),
   value: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
   onChange: PropTypes.func.isRequired,
+  classes: PropTypes.object.isRequired,
 };
 
-export default CheckboxQuestion;
+export default withStyles(styles)(CheckboxQuestion);
