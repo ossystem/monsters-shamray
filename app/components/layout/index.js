@@ -4,10 +4,12 @@ import { withStyles } from '@material-ui/core/styles';
 import logo from 'images/miniLogo.png';
 import messages from './messages';
 import { FormattedMessage } from 'react-intl';
+import classNames from 'classnames';
 
 const styles = theme => ({
   root: {
     position: 'relative',
+    minWidth: '100%',
   },
   logo: {
     position: 'absolute',
@@ -19,9 +21,9 @@ const styles = theme => ({
   },
 });
 
-function Layout({ children, classes }) {
+function Layout({ children, classes, className }) {
   return (
-    <div className={classes.root} >
+    <div className={classNames(classes.root, className)} >
       <div className={classes.logo} >
         <img src={logo} alt="logo" className={classes.logoImg} />
         <FormattedMessage {...messages.logo} />
@@ -37,6 +39,7 @@ Layout.propTypes = {
     PropTypes.node,
   ]).isRequired,
   classes: PropTypes.object.isRequired,
+  className: PropTypes.string,
 };
 
 export default withStyles(styles)(Layout);

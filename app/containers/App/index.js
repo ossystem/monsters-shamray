@@ -28,8 +28,9 @@ const QuestionerPage = withAuth(withCheckAuthenticated(Questioner));
 const ResultPage = withAuth(withCheckAuthenticated(Result));
 
 import GlobalStyle from '../../global-styles';
-import { bindActionCreators } from 'redux';
+import { bindActionCreators, compose } from 'redux';
 import { connect } from 'react-redux';
+import { withStyles } from '@material-ui/core';
 
 const handleAuthentication = ({ location, auth }) => {
   if (/access_token|id_token|error/.test(location.hash)) {
@@ -49,10 +50,10 @@ class App extends React.Component {
   }
 
   render() {
-    const { auth } = this.props;
+    const { auth, classes } = this.props;
 
     return (
-      <div>
+      <div className={classes.root} >
         <Helmet
           titleTemplate="%s - Find your monster"
           defaultTitle="Find your monster"
@@ -88,11 +89,24 @@ class App extends React.Component {
   }
 }
 
+const styles = theme => ({
+  root: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'start',
+    alignItems: 'center',
+    width: '100%',
+    maxWidth: theme.spacing.unit * 218,
+    margin: '0 auto',
+  },
+});
+
 App.propTypes = {
   locale: PropTypes.string,
   auth: PropTypes.object.isRequired,
   renewSession: PropTypes.func.isRequired,
   stopFetching: PropTypes.func.isRequired,
+  classes: PropTypes.object.isRequired,
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
@@ -108,9 +122,13 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
   ),
 });
 
-export default withAuth(
-  connect(
-    undefined,
-    mapDispatchToProps,
-  )(App),
+const withConnect = connect(
+  undefined,
+  mapDispatchToProps,
 );
+
+export default compose(
+  // Put `withReducer` before `withConnect`
+  withStyles(styles),
+  withConnect,
+)(App);
