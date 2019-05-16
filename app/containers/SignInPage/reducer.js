@@ -5,7 +5,7 @@
  */
 import produce from 'immer';
 
-import Auth from 'utils/auth/Auth';
+import { createAuth } from 'utils/auth/Auth';
 import {
   AUTHENTICATION_REQUEST,
   AUTHENTICATION_SUCCESS,
@@ -14,7 +14,7 @@ import {
 } from './constants';
 
 export const initialState = {
-  auth: new Auth(),
+  auth: createAuth(),
   isFetching: true,
 };
 

@@ -27,11 +27,6 @@ export default class Auth {
     this.getAccessToken = this.getAccessToken.bind(this);
     this.getIdToken = this.getIdToken.bind(this);
     this.renewSession = this.renewSession.bind(this);
-    this.clone = this.clone.bind(this);
-  }
-
-  clone() {
-    return Object.create(this);
   }
 
   async login(email, password, redirectAfterLogin) {
@@ -58,8 +53,8 @@ export default class Auth {
         this.navigateAfterLogin();
       } else if (err) {
         history.replace('/');
-        // console.log(err);
-        // alert(`Error: ${err.error}. Check the console for further details.`);
+        console.log(err);
+        alert(`Error: ${err.error}. Check the console for further details.`);
       }
     });
   }
@@ -132,3 +127,21 @@ export default class Auth {
     return new Date().getTime() < expiresAt;
   }
 }
+
+export const createAuth = () => {
+  const auth = new Auth();
+  // eslint-disable-next-line no-underscore-dangle
+  auth._auth = auth;
+
+  const handler = {
+    get(target, phrase) {
+      if (phrase === 'clone') {
+        return () => new Proxy(target._auth, handler);
+      } else {
+        return target[phrase];
+      }
+    },
+  };
+
+  return new Proxy(auth, handler);
+};
