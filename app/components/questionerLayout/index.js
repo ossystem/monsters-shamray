@@ -4,34 +4,48 @@ import Paper from '@material-ui/core/Paper';
 import { withStyles } from '@material-ui/core/styles';
 import messages from './messages';
 import { FormattedMessage } from 'react-intl';
-import green from '@material-ui/core/colors/green';
 
 const styles = theme => ({
   root: {
-    paddingTop: theme.spacing.unit * 11,
+    marginTop: theme.spacing.unit * 4,
+    [theme.breakpoints.up('sm')]: {
+      marginTop: theme.spacing.unit * 11,
+    },
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'start',
     alignItems: 'center',
   },
   monsterImg: {
-    height: theme.spacing.unit * 37,
     width: theme.spacing.unit * 46,
+    maxWidth: '60%',
+    [theme.breakpoints.up('sm')]: {
+      maxWidth: `min(60%, ${theme.spacing.unit * 46}px)`,
+    },
   },
   paper: {
     width: theme.spacing.unit * 123,
-    height: theme.spacing.unit * 90,
+    maxWidth: '100%',
     padding: theme.spacing.unit * 7,
   },
   stepper: {
     width: theme.spacing.unit * 33,
     height: theme.spacing.unit * 10,
-    marginLeft: -theme.spacing.unit * 16,
+    marginLeft: -theme.spacing.unit * 7,
     borderRadius: theme.spacing.unit / 2,
     backgroundColor: theme.palette.secondary.main,
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
+    [theme.breakpoints.up('sm')]: {
+      marginLeft: -theme.spacing.unit * 10,
+    },
+    [theme.breakpoints.up('md')]: {
+      marginLeft: -theme.spacing.unit * 12,
+    },
+    [theme.breakpoints.up('lg')]: {
+      marginLeft: -theme.spacing.unit * 14,
+    },
   },
   stepperSign: {
     color: 'white',
@@ -47,7 +61,7 @@ const styles = theme => ({
   },
 });
 
-function QuestionerLayout({ children, classes, monsterImg, stepNum, totalSteps }) {
+function QuestionerLayout({ children, classes, monsterImg, stepNum, totalSteps, width }) {
   return (
     <div className={classes.root} >
       <img src={monsterImg} className={classes.monsterImg} />
@@ -74,8 +88,9 @@ QuestionerLayout.propTypes = {
   ]).isRequired,
   classes: PropTypes.object.isRequired,
   monsterImg: PropTypes.string.isRequired,
-  stepNum: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-  totalSteps: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+  stepNum: PropTypes.number.isRequired,
+  totalSteps: PropTypes.number.isRequired,
+  width: PropTypes.string.isRequired,
 };
 
 export default withStyles(styles)(QuestionerLayout);

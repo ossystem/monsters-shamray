@@ -20,6 +20,7 @@ import monster3 from 'images/hatMonster.png';
 import monster4 from 'images/purpleMonster.png';
 import monster5 from 'images/redMonster.png';
 import monster6 from 'images/yellowMonster.png';
+import withWidth from '@material-ui/core/withWidth/withWidth';
 
 const images = [monster1, monster2, monster3, monster4, monster5, monster6];
 
@@ -125,6 +126,7 @@ class Questioner extends React.Component {
       answersSavingInProgress,
       classes,
       history,
+      width,
     } = this.props;
     const { step, answers } = this.state;
 
@@ -137,7 +139,7 @@ class Questioner extends React.Component {
     const monsterImg = this.rndImages[step];
 
     return (
-      <Layout history={history}>
+      <Layout history={history} width={width}>
         <Helmet>
           <title>Questioner</title>
           <meta
@@ -150,6 +152,7 @@ class Questioner extends React.Component {
             monsterImg={monsterImg}
             stepNum={step + 1}
             totalSteps={questionerConfig.steps.length}
+            width={width}
           >
             <Question
               config={questionerConfig.steps[step]}
@@ -250,6 +253,7 @@ Questioner.propTypes = {
   saveAnswers: PropTypes.func.isRequired,
   getQuestionerConfig: PropTypes.func.isRequired,
   classes: PropTypes.object.isRequired,
+  width: PropTypes.string.isRequired,
 };
 
 const withConnect = connect(
@@ -262,6 +266,7 @@ const withReducer = injectReducer({ key: 'questioner', reducer });
 const ConnectedQuestioner = compose(
   // Put `withReducer` before `withConnect`
   withStyles(styles),
+  withWidth(),
   withReducer,
   withConnect,
 )(Questioner);

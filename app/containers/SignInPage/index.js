@@ -10,21 +10,22 @@ import InputLabel from '@material-ui/core/InputLabel';
 import Input from '@material-ui/core/Input';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import { withStyles } from '@material-ui/core';
+import withWidth from '@material-ui/core/withWidth';
 import ArrowForward from '@material-ui/icons/ArrowForward';
 import messages from './messages';
 import { authenticationAction } from 'containers/SignInPage/actions';
 import { connect } from 'react-redux';
 import { bindActionCreators, compose } from 'redux';
 import monsterImg from 'images/redMonster.png';
+import mobRedMonster from 'images/mobRedMonster.png';
+import Hidden from '@material-ui/core/Hidden';
 
 const styles = theme => ({
-  root: {
-    // ...theme.mixins.gutters(),
-    // paddingTop: theme.spacing.unit * 2,
-    // paddingBottom: theme.spacing.unit * 2,
-  },
   header: {
-    fontSize: '68px',
+    fontSize: '32px',
+    [theme.breakpoints.up('sm')]: {
+      fontSize: '68px',
+    },
   },
   form: {
     display: 'flex',
@@ -41,6 +42,9 @@ const styles = theme => ({
   formButton: {
     alignSelf: 'flex-end',
     marginTop: theme.spacing.unit * 4,
+  },
+  mobFormButton: {
+    marginTop: theme.spacing.unit * 5,
   },
 });
 
@@ -106,18 +110,45 @@ class SignInPage extends React.Component {
     return !!(emailError || passwordError || !email || !password);
   }
 
+  renderButton = ({
+    disabled,
+    valueMessage,
+    rightIcon,
+    className,
+    fullWidth = false,
+  }) => (
+    <Button
+      disabled={disabled}
+      valueMessage={valueMessage}
+      rightIcon={rightIcon}
+      type="submit"
+      className={className}
+      fullWidth={fullWidth}
+    />
+  )
+
   render() {
-    const { email, password, emailError, passwordError, history } = this.state;
-    const { classes } = this.props;
-    const disabled = this.isFormSubmitionDisabled({ email, password, emailError, passwordError });
+    const { email, password, emailError, passwordError } = this.state;
+    const { classes, width, history } = this.props;
+    const disabled = this.isFormSubmitionDisabled({
+      email,
+      password,
+      emailError,
+      passwordError,
+    });
 
     return (
-      <Layout history={history}>
+      <Layout history={history} width={width}>
         <Helmet>
           <title>SignInPage</title>
           <meta name="description" content="SignIn page" />
         </Helmet>
-        <QuestionerLayout monsterImg={monsterImg} stepNum="1" totalSteps="5" >
+        <QuestionerLayout
+          monsterImg={width === 'xs' ? mobRedMonster : monsterImg}
+          stepNum={1}
+          totalSteps={5}
+          width={width}
+        >
           <div className={classes.header} >
             <FormattedMessage {...messages.header} />
           </div>
@@ -129,7 +160,6 @@ class SignInPage extends React.Component {
             <FormControl
               className={classes.formControl}
               error={!!emailError}
-              classes={{ underline: classes.formControlUnderline }}
             >
               <InputLabel htmlFor="email">Your Email</InputLabel>
               <Input
@@ -160,15 +190,25 @@ class SignInPage extends React.Component {
                 {passwordError}
               </FormHelperText>
             </FormControl>
-            <Button
-              disabled={disabled}
-              valueMessage={messages.submitButton}
-              rightIcon={ArrowForward}
-              type="submit"
-              className={classes.formButton}
-            />
+            <Hidden xsDown>
+              {this.renderButton({
+                disabled,
+                valueMessage: messages.submitButton,
+                rightIcon: ArrowForward,
+                className: classes.formButton,
+              })}
+            </Hidden>
           </form>
         </QuestionerLayout>
+        <Hidden smUp>
+          {this.renderButton({
+            disabled,
+            valueMessage: messages.submitButton,
+            rightIcon: ArrowForward,
+            className: classes.mobFormButton,
+            fullWidth: true,
+          })}
+        </Hidden>
       </Layout>
     );
   }
@@ -178,6 +218,8 @@ SignInPage.propTypes = {
   auth: PropTypes.object.isRequired,
   login: PropTypes.func.isRequired,
   classes: PropTypes.object.isRequired,
+  history: PropTypes.object.isRequired,
+  width: PropTypes.string.isRequired,
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => (
@@ -200,5 +242,6 @@ const withConnect = connect(
 export default compose(
   // Put `withReducer` before `withConnect`
   withStyles(styles),
+  withWidth(),
   withConnect,
 )(SignInPage);

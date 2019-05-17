@@ -57,7 +57,10 @@ const styles = theme => ({
     position: 'relative',
   },
   question: {
-    fontSize: '68px',
+    fontSize: '32px',
+    [theme.breakpoints.up('sm')]: {
+      fontSize: '68px',
+    },
   },
   formControl: {
     display: 'flex',
