@@ -91,7 +91,7 @@ class SignInPage extends React.Component {
   }
 
   onSubmit = e => {
-    e.preventDefault();
+    e && e.preventDefault();
     const { state, isValid, props } = this;
     const { email, password } = state;
     const { login, auth: { isFetching } } = props;
@@ -116,6 +116,7 @@ class SignInPage extends React.Component {
     rightIcon,
     className,
     fullWidth = false,
+    onClick,
   }) => (
     <Button
       disabled={disabled}
@@ -124,6 +125,7 @@ class SignInPage extends React.Component {
       type="submit"
       className={className}
       fullWidth={fullWidth}
+      onClick={onClick}
     />
   )
 
@@ -207,6 +209,7 @@ class SignInPage extends React.Component {
             rightIcon: ArrowForward,
             className: classes.mobFormButton,
             fullWidth: true,
+            onClick: this.onSubmit,
           })}
         </Hidden>
       </Layout>

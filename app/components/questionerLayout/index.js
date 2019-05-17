@@ -57,7 +57,10 @@ const styles = theme => ({
     flexDirection: 'column',
     justifyContent: 'start',
     alignItems: 'flex-start',
-    marginTop: theme.spacing.unit * 13,
+    marginTop: theme.spacing.unit * 8,
+    [theme.breakpoints.up('sm')]: {
+      marginTop: theme.spacing.unit * 13,
+    },
   },
 });
 

@@ -20,9 +20,24 @@ import monster3 from 'images/hatMonster.png';
 import monster4 from 'images/purpleMonster.png';
 import monster5 from 'images/redMonster.png';
 import monster6 from 'images/yellowMonster.png';
+import mobMonster1 from 'images/mobBespectacledMonster.png';
+import mobMonster2 from 'images/mobBlueMonster.png';
+import mobMonster3 from 'images/mobHatMonster.png';
+import mobMonster4 from 'images/mobPurpleMonster.png';
+import mobMonster5 from 'images/mobRedMonster.png';
+import mobMonster6 from 'images/mobYellowMonster.png';
 import withWidth from '@material-ui/core/withWidth/withWidth';
+import Hidden from '@material-ui/core/Hidden';
 
-const images = [monster1, monster2, monster3, monster4, monster5, monster6];
+const normImages = [monster1, monster2, monster3, monster4, monster5, monster6];
+const mobImages = [
+  mobMonster1,
+  mobMonster2,
+  mobMonster3,
+  mobMonster4,
+  mobMonster5,
+  mobMonster6,
+];
 
 class Questioner extends React.Component {
   constructor(props) {
@@ -37,14 +52,17 @@ class Questioner extends React.Component {
 
     //TODO
     const steps = 5;
-    let restIng = images;
-    this.rndImages = [];
-    for (let step = 0; step < steps; step++) {
-      const image = restIng[Math.round((restIng.length - 1) * Math.random())];
-      this.rndImages[step] = image;
-      restIng = restIng.filter(i => i !== image);
+    let restNums = [];
+    for (let i = 0; i < normImages.length; i++) {
+      restNums.push(i);
     }
-
+    this.rndImages = {norm: [], mob: []};
+    for (let step = 0; step < steps; step++) {
+      const rndNum = Math.round((restNums.length - 1) * Math.random());
+      this.rndImages.norm[step] = normImages[rndNum];
+      this.rndImages.mob[step] = mobImages[rndNum];
+      restNums = restNums.filter(i => i !== rndNum);
+    }
     this.state = { step: 0, answers };
   }
 
@@ -117,6 +135,17 @@ class Questioner extends React.Component {
     this.setState({ answers });
   }
 
+  renderButton = ({ disabled, valueMessage, className, fullWidth }) => (
+    <Button
+      disabled={disabled}
+      valueMessage={valueMessage}
+      rightIcon={ArrowForward}
+      onClick={this.onForward}
+      className={className}
+      fullWidth={fullWidth}
+    />
+  )
+
   render() {
     const {
       questionerConfig: {
@@ -136,7 +165,7 @@ class Questioner extends React.Component {
       answersSavingInProgress ||
       typeof answer === 'undefined';
 
-    const monsterImg = this.rndImages[step];
+    const monsterImg = this.rndImages[width === 'xs' ? 'mob' : 'norm'][step];
 
     return (
       <Layout history={history} width={width}>
@@ -148,28 +177,38 @@ class Questioner extends React.Component {
           />
         </Helmet>
         {!questionerConfigFetching && questionerConfig && (
-          <QuestionerLayout
-            monsterImg={monsterImg}
-            stepNum={step + 1}
-            totalSteps={questionerConfig.steps.length}
-            width={width}
-          >
-            <Question
-              config={questionerConfig.steps[step]}
-              value={answer}
-              id={step}
-              onChange={this.onAnswer}
-            />
-            <Button
-              disabled={disabled}
-              valueMessage={
-                messages[step < questionerConfig.steps.length - 1 ? 'next' : 'submit']
-              }
-              rightIcon={ArrowForward}
-              onClick={this.onForward}
-              className={classes.nextButton}
-            />
-          </QuestionerLayout>
+          <React.Fragment>
+            <QuestionerLayout
+              monsterImg={monsterImg}
+              stepNum={step + 1}
+              totalSteps={questionerConfig.steps.length}
+              width={width}
+            >
+              <Question
+                config={questionerConfig.steps[step]}
+                value={answer}
+                id={step}
+                onChange={this.onAnswer}
+              />
+              <Hidden xsDown>
+                {this.renderButton({
+                  disabled,
+                  valueMessage: messages[step < questionerConfig.steps.length - 1 ? 'next' : 'submit'],
+                  rightIcon: ArrowForward,
+                  className: classes.formButton,
+                })}
+              </Hidden>
+            </QuestionerLayout>
+            <Hidden smUp>
+              {this.renderButton({
+                disabled,
+                valueMessage: messages[step < questionerConfig.steps.length - 1 ? 'next' : 'submit'],
+                className: classes.mobNextButton,
+                fullWidth: true,
+                onClick: this.onSubmit,
+              })}
+            </Hidden>
+          </React.Fragment>
         )}
       </Layout>
     );
@@ -180,6 +219,9 @@ const styles = theme => ({
   nextButton: {
     alignSelf: 'flex-end',
     marginTop: theme.spacing.unit * 4,
+  },
+  mobNextButton: {
+    marginTop: theme.spacing.unit * 5,
   },
 });
 

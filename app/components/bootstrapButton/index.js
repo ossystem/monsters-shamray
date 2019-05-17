@@ -15,7 +15,10 @@ const styles = theme => ({
     borderRadius: theme.spacing.unit,
     lineHeight: 1.5,
     backgroundColor: '#007bff',
-    minWidth: '340px',
+    minWidth: '100%',
+    [theme.breakpoints.up('sm')]: {
+      minWidth: '340px',
+    },
     height: theme.spacing.unit * 11,
   },
   icon: {
