@@ -15,11 +15,8 @@ const styles = theme => ({
     borderRadius: theme.spacing.unit,
     lineHeight: 1.5,
     backgroundColor: '#007bff',
-    width: '340px',
+    minWidth: '340px',
     height: theme.spacing.unit * 11,
-  },
-  margin: {
-    margin: theme.spacing.unit,
   },
   icon: {
     fontSize: '38px',
@@ -45,6 +42,7 @@ function BootstrapButton(props) {
     rightIcon: RightIcon,
     type,
     className,
+    fullWidth,
   } = props;
 
   return (
@@ -56,6 +54,7 @@ function BootstrapButton(props) {
       disabled={disabled}
       onClick={onClick}
       type={type}
+      fullWidth={fullWidth}
     >
       {LeftIcon && (
         <LeftIcon
@@ -86,6 +85,11 @@ BootstrapButton.propTypes = {
   rightIcon: PropTypes.func,
   type: PropTypes.string,
   className: PropTypes.string,
+  fullWidth: PropTypes.bool,
+};
+
+BootstrapButton.defaultProps = {
+  fullWidth: false,
 };
 
 export default withStyles(styles)(BootstrapButton);
