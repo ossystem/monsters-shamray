@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import { Helmet } from 'react-helmet';
 import { FormattedMessage } from 'react-intl';
 import messages from './messages';
@@ -73,7 +74,6 @@ const styles = theme => ({
     padding: theme.spacing.unit * 4,
     border: `1px solid rgb(227, 227, 227)`,
     marginLeft: theme.spacing.unit * 6,
-
     [theme.breakpoints.up('sm')]: {
       flexDirection: 'column',
       justifyContent: 'start',
@@ -87,17 +87,27 @@ const styles = theme => ({
     flexShrink: 0,
     border: `2px solid rgb(210, 219, 57)`,
     borderRadius: '50%',
-    width: theme.spacing.unit * 16,
-    height: theme.spacing.unit * 16,
+    width: `calc(50% - ${theme.spacing.unit}px)`,
     fontSize: '18px',
     display: 'grid',
     justifyContent: 'center',
     alignContent: 'center',
     color: theme.palette.primary.main,
     textAlign: 'center',
+    [theme.breakpoints.up('sm')]: {
+      width: theme.spacing.unit * 16,
+      height: theme.spacing.unit * 16,
+      marginLeft: 0,
+    },
   },
   answerItemTopMargin: {
     marginTop: theme.spacing.unit * 2,
+  },
+  answerItemMarginLeft: {
+    marginLeft: theme.spacing.unit,
+    [theme.breakpoints.up('sm')]: {
+      marginLeft: 0,
+    },
   },
   youAre: {
     width: theme.spacing.unit * 21,
@@ -132,6 +142,10 @@ const styles = theme => ({
     maxWidth: `calc(100% - ${theme.spacing.unit * 4 * 2}px)`,
     maxHeight: `calc(100% - ${theme.spacing.unit * 4 * 2}px)`,
   },
+  break: {
+    flexBasis: '100%',
+    height: 0,
+  },
 });
 
 class ResultPage extends React.Component {
@@ -142,16 +156,65 @@ class ResultPage extends React.Component {
       norm: normImages[Math.round((normImages.length - 1) * Math.random())],
       mob: mobImages[Math.round((mobImages.length - 1) * Math.random())],
     };
+
+    this.answerItemRef = React.createRef();
+
+    this.state = { answerItemWidth: '' };
   }
 
-  async componentDidMount() {
+  componentDidMount() {
     const { history, questionerConfig, answers } = this.props;
     if (!questionerConfig || !answers) {
-      history.replace('/questioner');
+      return history.replace('/questioner');
+    }
+    if (this.props.width === 'xs') {
+      window.addEventListener('resize', this.handleResize);
+      const computedWidth = this.getComputedAnswerItemWidth();
+      if (computedWidth) {
+        this.setState({ answerItemWidth: computedWidth });
+      }
     }
   }
 
-  renderAnswers(questionerConfig, answers, classes) {
+  componentDidUpdate(prevProps) {
+    if (prevProps.width !== this.props.width) {
+      if (this.props.width === 'xs') {
+        window.removeEventListener('resize', this.handleResize);
+        window.addEventListener('resize', this.handleResize);
+        const computedWidth = this.getComputedAnswerItemWidth();
+        if (computedWidth) {
+          this.setState({ answerItemWidth: computedWidth });
+        }
+      } else {
+        window.removeEventListener('resize', this.handleResize);
+      }
+    }
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.handleResize);
+  }
+
+  handleResize = () => {
+    const computedWidth = this.getComputedAnswerItemWidth();
+    if (!!computedWidth && this.state.answerItemWidth !== computedWidth) {
+      this.setState({ answerItemWidth: computedWidth });
+    }
+  }
+
+  getComputedAnswerItemWidth = () => {
+    const answerItem = ReactDOM.findDOMNode(this.answerItemRef.current);
+    const { width } = window.getComputedStyle(answerItem);
+    return Number.parseInt(width);
+  }
+
+  renderAnswers({
+    questionerConfig,
+    answers,
+    classes,
+    mobile = false,
+    itemWidth,
+  }) {
     const prepAnswers = [];
     answers.forEach((answer, index) => {
       const { appearance, options } = questionerConfig[index];
@@ -177,11 +240,18 @@ class ResultPage extends React.Component {
           break;
       }
     });
+    const style = mobile && itemWidth ? { height: `${itemWidth}px` } : {};
     return prepAnswers.map((str, ind) => (
       <Paper
-        className={classNames(classes.answerItem, classes.answerItemTopMargin)}
+        className={classNames(
+          classes.answerItem,
+          classes.answerItemTopMargin,
+          mobile && ind % 2 && classes.answerItemMarginLeft,
+        )}
         key={ind}
         elevation={0}
+        ref={ind === 0 && this.answerItemRef}
+        style={style}
       >
         {str}
       </Paper>
@@ -190,7 +260,8 @@ class ResultPage extends React.Component {
 
   render() {
     const { classes, questionerConfig, answers, history, width } = this.props;
-
+    const { answerItemWidth } = this.state;
+    const mobile = width === 'xs';
     return (
       <Layout className={classes.layout} history={history} width={width}>
         <Helmet>
@@ -212,12 +283,19 @@ class ResultPage extends React.Component {
                     <FormattedMessage {...messages.you_are} />
                   </span>
                 </Paper>
-                {this.renderAnswers(questionerConfig.steps, answers, classes)}
+                {mobile && <div className={classes.break} />}
+                {this.renderAnswers({
+                  questionerConfig: questionerConfig.steps,
+                  answers,
+                  classes,
+                  mobile,
+                  itemWidth: answerItemWidth,
+                })}
               </Paper>
               <Paper className={classes.monsterImgContainer} elevation={0}>
                 <img
                   className={classes.monsterImg}
-                  src={this.rndImage[width === 'xs' ? 'mob' : 'norm']}
+                  src={this.rndImage[mobile ? 'mob' : 'norm']}
                 />
               </Paper>
             </React.Fragment>
